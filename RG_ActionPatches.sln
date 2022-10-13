@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGActionPatches", "src\RGActionPatches.csproj", "{E24B1E6B-66E3-476F-9BDA-D0D23466CA14}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E24B1E6B-66E3-476F-9BDA-D0D23466CA14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E24B1E6B-66E3-476F-9BDA-D0D23466CA14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E24B1E6B-66E3-476F-9BDA-D0D23466CA14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E24B1E6B-66E3-476F-9BDA-D0D23466CA14}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32FD213C-CC9F-474E-8FD5-87CB5BEA8172}
+	EndGlobalSection
+EndGlobal
