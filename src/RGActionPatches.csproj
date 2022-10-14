@@ -71,8 +71,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StateManager.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Hooks.cs" />
+    <Compile Include="Patches\DateSpotMovement.cs" />
+    <Compile Include="Patches\TalkToSomeone.cs" />
+    <Compile Include="Patches\TalkTarget.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="RGActionPatchesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

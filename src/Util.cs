@@ -1,6 +1,7 @@
 ﻿using Il2CppSystem.Collections.Generic;
 using System;
 
+
 namespace RGActionPatches
 {
     internal static class Util
@@ -64,19 +65,7 @@ namespace RGActionPatches
             }
         }
 
-        internal static int getWorkerJobIDForMap(int currentJobID)
-        {
-            int newID = currentJobID;
-            int workerJobID = StateManager.Instance.JobIDForCurrentMap;
-            // For everyone but Customer, Badfriend, Common, and not in private areas
-            if (currentJobID > -1 && !StateManager.Instance.CurrentMapIsPrivate && workerJobID > -1)
-            {
-                newID = workerJobID;
-            }
-            return newID;
-        }
-
-        internal static int readOnlyIndexOf<T>(IReadOnlyList<T> irol, Il2CppSystem.Predicate<T> predicate)
+        internal static int readOnlyIndexOf<T>(IReadOnlyList<T> irol, Func<T, bool> predicate)
         {
             int i = 0;
             T item;
@@ -97,6 +86,20 @@ namespace RGActionPatches
                     return -1;
                 }
             }
+        }
+
+        internal static int indexOf<T>(List<T> list, Func<T, bool> predicate)
+        {
+            int index = 0;
+            while (index < list.Count)
+            {
+                if (predicate.Invoke(list[index]))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using BepInEx.IL2CPP;
-using UnityEngine;
-using UnhollowerRuntimeLib;
+
 
 namespace RGActionPatches
 {
@@ -17,38 +15,15 @@ namespace RGActionPatches
 
         internal static new ManualLogSource Log;
 
-        private ConfigEntry<bool> enabled;
-        public GameObject BogusComponents;
-
         public override void Load()
         {
             Log = base.Log;
 
-            enabled = Config.Bind(
-                "General",
-                "Enable this plugin",
-                true,
-                "If false, this plugin will do nothing (requires game restart)"
-            );
+            RGActionPatches.Config.init(this);
 
-            if (enabled.Value)
+            if (RGActionPatches.Config.enabled)
             {
                 Harmony.CreateAndPatchAll(typeof(Hooks), GUID);
-            }
-
-            ClassInjector.RegisterTypeInIl2Cpp<StateManager>();
-
-            BogusComponents = GameObject.Find("BogusComponents");
-            if (BogusComponents == null)
-            {
-                BogusComponents = new GameObject("BogusComponents");
-                GameObject.DontDestroyOnLoad(BogusComponents);
-                BogusComponents.hideFlags = HideFlags.HideAndDontSave;
-                BogusComponents.AddComponent<StateManager>();
-            }
-            else
-            {
-                BogusComponents.AddComponent<StateManager>();
             }
         }
     }

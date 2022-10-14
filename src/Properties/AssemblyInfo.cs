@@ -4,7 +4,7 @@ using RGActionPatches;
 
 [assembly: AssemblyTitle(RGActionPatchesPlugin.PluginName)]
 [assembly: AssemblyProduct(RGActionPatchesPlugin.PluginName)]
-[assembly: AssemblyCopyright("Copyright ©  2022")]
+[assembly: AssemblyCopyright("Copyright © bogus 2022")]
 
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
