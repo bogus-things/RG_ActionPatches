@@ -16,4 +16,3 @@ using RGActionPatches;
 [assembly: Guid("eb3e7974-c209-4f73-936a-b41c7a534d96")]
 
 [assembly: AssemblyVersion(RGActionPatchesPlugin.Version)]
-[assembly: AssemblyFileVersion("1.0.0.0")]
