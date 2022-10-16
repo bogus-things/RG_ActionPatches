@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\plugins\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,41 +32,41 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\IL.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\IL.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppSystem">
-      <HintPath>..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\core\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Core">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\core\BepInEx.Core.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\core\BepInEx.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.IL2CPP">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\core\BepInEx.IL2CPP.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\core\BepInEx.IL2CPP.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnhollowerBaseLib">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -84,5 +84,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <PostBuildEvent>PowerShell $(SolutionDir)release.ps1</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <PostBuildEvent>xcopy $(SolutionDir)src\bin\Debug\RG_ActionPatches.dll C:\Games\RoomGirl\BepInEx\plugins\RG_ActionPatches.dll* /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
