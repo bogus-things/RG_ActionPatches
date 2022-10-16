@@ -6,7 +6,7 @@ namespace RGActionPatches
 {
     internal static class Util
     {
-        internal static List<T> ReadOnlyToList<T>(IReadOnlyList<T> irol)
+        internal static List<T> readOnlyToList<T>(IReadOnlyList<T> irol)
         {
             List<T> list = new List<T>();
             int i = 0;
@@ -37,7 +37,7 @@ namespace RGActionPatches
             return list;
         }
 
-        internal static void AddReadOnlyToList<T>(IReadOnlyList<T> irol, List<T> dest)
+        internal static void addReadOnlyToList<T>(IReadOnlyList<T> irol, List<T> dest)
         {
             int i = 0;
             T item;

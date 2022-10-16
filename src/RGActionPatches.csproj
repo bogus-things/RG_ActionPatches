@@ -65,6 +65,10 @@
       <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UniRx">
+      <HintPath>..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\UniRx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\..\..\Games\RoomGirl R1.2\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
@@ -76,6 +80,7 @@
     <Compile Include="Patches\DateSpotMovement.cs" />
     <Compile Include="Patches\TalkToSomeone.cs" />
     <Compile Include="Patches\TalkTarget.cs" />
+    <Compile Include="StateManager.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="RGActionPatchesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

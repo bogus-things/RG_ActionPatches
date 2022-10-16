@@ -5,7 +5,8 @@ using RG.Scene.Action.UI;
 using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
 using BepInEx.Logging;
-
+using System;
+using RG.UI;
 
 namespace RGActionPatches
 {
@@ -29,6 +30,31 @@ namespace RGActionPatches
             Patches.TalkTarget.resetCommandList(__instance, commands, cancelCommand);
         }
 
+        // we want to capture the CommandList at scene load to use it in setTargetPost
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(CommandList), nameof(CommandList.Awake))]
+        private static void awakePost(CommandList __instance)
+        {
+            StateManager.Instance.currentCommandList = __instance;
+        }
+
+        // and for safety, we want to release it on scene destroy
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.OnDestroy))]
+        private static void destroyPre()
+        {
+            StateManager.Instance.currentCommandList = null;
+        }
+
+        // Patch the command selection to disable some of the newly-available talk commands
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ScrollCylinder), nameof(ScrollCylinder.SetTarget))]
+        private static void setTargetPost()
+        {
+            CommandList commandList = StateManager.Instance.currentCommandList;
+            Patches.TalkTarget.updateOptionDisabledState(commandList);
+        }
+
         // Add "Talk to someone" to the list of commands if it's been filtered out
         [HarmonyPostfix]
         [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
@@ -38,6 +64,14 @@ namespace RGActionPatches
             {
                 Patches.TalkToSomeone.addToActorCommands(__instance, ActionScene.Instance, commands, dest);
             }
+        }
+
+        // Catch & Suppress an error thrown inside FilterCommands when it's patched by Harmony
+        [HarmonyFinalizer]
+        [HarmonyPatch(typeof(ParameterConditions), nameof(ParameterConditions.IF), new[] { typeof(RG.Define.TableData.Category), typeof(int), typeof(Actor), typeof(Actor), typeof(ActionInfo) })]
+        private static Exception whoNamesAMethodIF()
+        {
+            return null;
         }
 
         // Adds "Talk to someone" to the list of commands available at a point if it's missing
