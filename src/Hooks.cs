@@ -51,8 +51,7 @@ namespace RGActionPatches
         [HarmonyPatch(typeof(ScrollCylinder), nameof(ScrollCylinder.SetTarget))]
         private static void setTargetPost()
         {
-            CommandList commandList = StateManager.Instance.currentCommandList;
-            Patches.TalkTarget.updateOptionDisabledState(commandList);
+            Patches.TalkTarget.updateOptionDisabledState(StateManager.Instance.currentCommandList, ActionScene.Instance);
         }
 
         // Add "Talk to someone" to the list of commands if it's been filtered out

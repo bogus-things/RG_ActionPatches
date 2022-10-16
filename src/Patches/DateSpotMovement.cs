@@ -20,7 +20,7 @@ namespace RGActionPatches.Patches
             if (isDateSpot(scene._actionSettings, scene.MapID))
             {
                 // if the spot across from the target is available
-                // (includes a check whether actor is already there to prevent infinite looping)
+                // (and if the actor isn't already sitting there)
                 ActionPoint pairingPoint = target.OccupiedActionPoint.Pairing;
                 if (pairingPoint != null && pairingPoint.IsAvailable() && actor.OccupiedActionPoint != pairingPoint)
                 {
@@ -37,16 +37,33 @@ namespace RGActionPatches.Patches
 
         internal static void handleArrivalAfterRedirect(Actor actor, ActionScene scene)
         {
-            if (isDateSpot(scene._actionSettings, scene.MapID))
+            ActionPoint currentPoint = actor.OccupiedActionPoint;
+            // should only run in date spots, should only run after moving to a spot across
+            // from another actor, and should not run when the actor is returning to a spot
+            bool conditions = (
+                isDateSpot(scene._actionSettings, scene.MapID) &&
+                currentPoint != null &&
+                currentPoint != actor.PostedActionPoint &&
+                currentPoint.Pairing?.AttachedActor != null
+            );
+            
+            if (conditions)
             {
-                ActionPoint currentPoint = actor.OccupiedActionPoint;
-                // pairing here seems to clean up the actor/point state
-                ActionScene.PairActorAndPoint(actor, actor.OccupiedActionPoint);
-                if (currentPoint && currentPoint.Pairing && currentPoint.Pairing.AttachedActor)
+                // if another actor had that spot, do a seat swap
+                foreach(Actor a in scene._actors)
                 {
-                    // resend the talk action so the convo starts on arrival
-                    actor.TalkTo(currentPoint.Pairing.AttachedActor);
+                    if (a.PostedActionPoint == currentPoint)
+                    {
+                        a.PostedActionPoint = actor.PostedActionPoint;
+                        break;
+                    }
                 }
+
+                // assign some point references to clean things up
+                actor.PostedActionPoint = currentPoint;
+                ActionScene.PairActorAndPoint(actor, actor.OccupiedActionPoint);
+                // then reinitiate the talk
+                actor.TalkTo(currentPoint.Pairing.AttachedActor);
             }
         }
     }
