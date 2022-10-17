@@ -16,17 +16,17 @@ This plugin was developed exclusively using the BetterRepack repacks. Compatibil
 ## Reporting an issue
 If you believe you've found a bug with RG_ActionPatches, please use the following process to let me know!
 1. Do you best to ensure the bug is with RG_ActionPatches
-  a. Check the log for errors referencing this specific plugin
-  b. If the logs show errors for other plugins, disable those with KKManager and try again
-  c. Disable RG_ActionPatches with KKManager and see if the bug persists
+    1. Check the log for errors referencing this specific plugin
+    2. If the logs show errors for other plugins, disable those with KKManager and try again
+    3. Disable RG_ActionPatches with KKManager and see if the bug persists
 2. Check [Issues](https://github.com/bogus-things/RG_ActionPatches/issues) for any open issue threads
-  a. If you see an open thread for a bug matching the behavior you're seeing, please add a comment there instead of creating a new issue. And when adding a new comment, check the top post to confirm what information you should provide
-  b. If you don't, feel free to create a new issue describing the bug you've found
+    1. If you see an open thread for a bug matching the behavior you're seeing, please add a comment there instead of creating a new issue. And when adding a new comment, check the top post to confirm what information you should provide
+    2. If you don't, feel free to create a new issue describing the bug you've found
 3. When creating a new issue, please provide the following:
-  a. A description of the behavior
-  b. Your current BetterRepack version and your current RG_ActionPatches version
-  c. If you're able to reproduce the bug consistently, provide the steps you take to do so
-  d. If there is an error in the logs, provide your game logs as an attached `.txt` file (please don't copy/paste it into the issue description)
+    1. A description of the behavior
+    2. Your current BetterRepack version and your current RG_ActionPatches version
+    3. If you're able to reproduce the bug consistently, provide the steps you take to do so
+    4. If there is an error in the logs, provide your game logs as an attached `.txt` file (please don't copy/paste it into the issue description)
   
   ## Contributing
   If you'd like to contribute to feature development or bug fixing, pull requests are welcome! For convenience in getting set up, here's a table mapping out the project references (paths are relative to your game root directory):
