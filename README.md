@@ -1,5 +1,5 @@
 # RG_ActionPatches
-Patches to unlock &amp; add restricted or missing gameplay options
+A collection of Harmony patches to unlock &amp; add restricted or missing character actions
 
 ## Features
 - Adds "Talk to someone" action for characters outside their workplaces (i.e. visitng the casino or clinic)
@@ -15,12 +15,12 @@ This plugin was developed exclusively using the BetterRepack repacks. Compatibil
 
 ## Reporting an issue
 If you believe you've found a bug with RG_ActionPatches, please use the following process to let me know!
-1. Do you best to ensure the bug is with RG_ActionPatches
+1. Do your best to ensure the bug is with RG_ActionPatches
     1. Check the log for errors referencing this specific plugin
     2. If the logs show errors for other plugins, disable those with KKManager and try again
     3. Disable RG_ActionPatches with KKManager and see if the bug persists
-2. Check [Issues](https://github.com/bogus-things/RG_ActionPatches/issues) for any open issue threads
-    1. If you see an open thread for a bug matching the behavior you're seeing, please add a comment there instead of creating a new issue. And when adding a new comment, check the top post to confirm what information you should provide
+2. Check [Issues](https://github.com/bogus-things/RG_ActionPatches/issues) for any open issues (notably the pinned issues at the top)
+    1. If you see an open issue for a bug matching the behavior you're seeing, please add a comment there instead of creating a new issue. And when adding a new comment, check the top post to confirm what information you should provide
     2. If you don't, feel free to create a new issue describing the bug you've found
 3. When creating a new issue, please provide the following:
     1. A description of the behavior
