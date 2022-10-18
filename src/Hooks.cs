@@ -85,6 +85,16 @@ namespace RGActionPatches
             }
         }
 
+        // If headed toward a seat previously taken by someone in the bathroom, or if leaving
+        // a table while the other seat's character is in the bathroom to talk to someone else,
+        // do a seat swap to avoid any collisions between characters
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Actor), nameof(Actor.TalkTo))]
+        private static void talkToPre(Actor __instance, Actor target)
+        {
+            Patches.DateSpotMovement.doSeatSwap(__instance, target, ActionScene.Instance);
+        }
+
         // Overrides the actor's destination to the spot across from the target at date locations
         // (Cafe, Restaurant, Park) and resets their state so they walk there
         [HarmonyPostfix]
