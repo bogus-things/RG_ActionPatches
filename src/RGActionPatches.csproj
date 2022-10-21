@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Hooks.cs" />
+    <Compile Include="LazyHooks.cs" />
     <Compile Include="Patches\DateSpotMovement.cs" />
     <Compile Include="Patches\TalkToSomeone.cs" />
     <Compile Include="Patches\TalkTarget.cs" />

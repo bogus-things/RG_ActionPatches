@@ -10,15 +10,15 @@ namespace RGActionPatches.Patches
     class DateSpotMovement
     {
         private static ManualLogSource Log = RGActionPatchesPlugin.Log;
-        private static bool isDateSpot(ActionSettings settings, int mapID)
+        internal static bool IsDateSpot(ActionSettings settings, int mapID)
         {
             ActionSettings.MapIDs MapIDs = settings.MapID;
             return mapID == MapIDs.Cafe || mapID == MapIDs.Restaurant || mapID == MapIDs.Park;
         }
 
-        internal static void doSeatSwap(Actor actor, Actor target, ActionScene scene)
+        internal static void DoSeatSwap(Actor actor, Actor target, ActionScene scene)
         {
-            if (isDateSpot(scene._actionSettings, scene.MapID) && actor.OccupiedActionPoint != target.OccupiedActionPoint.Pairing)
+            if (IsDateSpot(scene._actionSettings, scene.MapID) && actor.OccupiedActionPoint != target.OccupiedActionPoint.Pairing)
             {
                 // if another actor had the destination spot spot or if they're leaving someone 
                 // who's in the bathroom to move to another table, do a seat swap
@@ -40,9 +40,9 @@ namespace RGActionPatches.Patches
             }
         }
 
-        internal static void redirectActorToPairedPoint(Actor actor, Actor target, ActionScene scene)
+        internal static void RedirectActorToPairedPoint(Actor actor, Actor target, ActionScene scene)
         {
-            if (isDateSpot(scene._actionSettings, scene.MapID))
+            if (IsDateSpot(scene._actionSettings, scene.MapID))
             {
                 // if the spot across from the target is available
                 // and if the actor isn't already sitting there
@@ -59,14 +59,14 @@ namespace RGActionPatches.Patches
             }
         }
 
-        internal static void handleArrivalAfterRedirect(Actor actor, ActionScene scene)
+        internal static void HandleArrivalAfterRedirect(Actor actor, ActionScene scene)
         {
             ActionPoint currentPoint = actor.OccupiedActionPoint;
 
             // should only run in date spots, should only run after moving to a spot across
             // from another actor, and should not run when the actor is returning to a spot
             bool conditions = (
-                isDateSpot(scene._actionSettings, scene.MapID) &&
+                IsDateSpot(scene._actionSettings, scene.MapID) &&
                 currentPoint != null &&
                 currentPoint != actor.PostedActionPoint &&
                 currentPoint.Pairing?.AttachedActor != null

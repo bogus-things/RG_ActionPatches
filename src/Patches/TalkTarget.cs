@@ -16,7 +16,7 @@ namespace RGActionPatches.Patches
         private const string TalkingToSomeoneCaption = "会話中";
         private const string InExaminationCaption = "診察中";
 
-        internal static void unrestrictTalkTargetList(ActionScene scene, Actor actor, List<ActionCommand> commands)
+        internal static void UnrestrictTalkTargetList(ActionScene scene, Actor actor, List<ActionCommand> commands)
         {
             commands.Clear();
 
@@ -30,21 +30,21 @@ namespace RGActionPatches.Patches
             }
         }
 
-        internal static void resetCommandList(CommandList commandList, IReadOnlyList<ActionCommand> originalCommands, ActionCommand cancelCommand)
+        internal static void ResetCommandList(CommandList commandList, IReadOnlyList<ActionCommand> originalCommands, ActionCommand cancelCommand)
         {
             commandList._commandList.Clear();
-            Util.addReadOnlyToList(originalCommands, commandList._commandList);
+            Util.AddReadOnlyToList(originalCommands, commandList._commandList);
             commandList._commandList.Add(cancelCommand);
         }
 
-        internal static void updateOptionDisabledState(CommandList commandList, ActionScene scene)
+        internal static void UpdateOptionDisabledState(CommandList commandList, ActionScene scene)
         {
             if (commandList != null && commandList._selectedCommand != null)
             {
                 ActionCommand cmd = commandList._selectedCommand.Item1;
                 CommandOption opt = commandList._selectedCommand.Item2;
                 
-                if (cmd.Info.ActionType == 3 && cmd.Info.GetActionNameCallback != null)// && !opt.ActiveDisablePanel)
+                if (cmd.Info.ActionType == 3 && cmd.Info.GetActionNameCallback != null && !opt.ActiveDisablePanel)
                 {
                     string actionName = cmd.Info.GetActionNameCallback.Invoke(commandList.ActorDependsOn);
                     if (actionName.Contains(TalkToSuffix))
