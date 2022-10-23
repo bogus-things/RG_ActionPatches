@@ -1,4 +1,6 @@
 ﻿using Il2CppSystem.Collections.Generic;
+using RG.Scene.Action.Core;
+using RG.Scripts;
 using System;
 
 
@@ -102,9 +104,10 @@ namespace RGActionPatches
             return -1;
         }
 
-        internal static void ReadOnlyFilter<T>(IReadOnlyList<T> irol, List<T> list, Func<T, bool> predicate)
+        internal static List<T> ReadOnlyFilter<T>(IReadOnlyList<T> irol, Func<T, bool> predicate)
         {
             int i = 0;
+            List<T> items = new List<T>();
             T item;
 
             while (true)
@@ -114,15 +117,33 @@ namespace RGActionPatches
                     item = irol[i];
                 }
                 catch (Exception) {
-                    return;
+                    return items;
                 }
 
                 if (predicate.Invoke(item))
                 {
-                    list.Add(item);
+                    items.Add(item);
                 }
                 i++;
             }
+        }
+
+        internal static string GetActionName(ActionCommand command, Actor actor)
+        {
+            string name = command.Info.ActionName;
+            if (name == null)
+            {
+                try
+                {
+                    name = command.Info.GetActionNameCallback.Invoke(actor);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+
+            return name;
         }
     }
 }

@@ -1,19 +1,33 @@
-﻿using RG.Scene;
-using RG.Scene.Action.Core;
-using RG.Scene.Action.Settings;
-using Il2CppSystem.Collections.Generic;
-using UnityEngine;
+﻿using Il2CppSystem.Collections.Generic;
 using BepInEx.Logging;
+using RG.Scene.Action.Settings;
+using RG.Scene.Action.Core;
+using RG.Scene;
+using UnityEngine;
 
-namespace RGActionPatches.Patches
+namespace RGActionPatches.DateSpotMovement
 {
-    class DateSpotMovement
+    class Patches
     {
         private static ManualLogSource Log = RGActionPatchesPlugin.Log;
         internal static bool IsDateSpot(ActionSettings settings, int mapID)
         {
             ActionSettings.MapIDs MapIDs = settings.MapID;
             return mapID == MapIDs.Cafe || mapID == MapIDs.Restaurant || mapID == MapIDs.Park;
+        }
+
+        internal static void HandleTalkMovement(ActionScene scene, Actor actor, RG.Define.StateID stateID)
+        {
+            if (IsDateSpot(scene._actionSettings, scene.MapID) && stateID == RG.Define.StateID.GoToDestination)
+            {
+                Actor target = actor.RecentScheduledPoint?.AttachedActor;
+                ActionPoint pairing = actor.RecentScheduledPoint?.Pairing;
+                if (target != null && pairing != null)
+                {
+                    DoSeatSwap(actor, target, ActionScene.Instance);
+                    RedirectActorToPairedPoint(actor, target, ActionScene.Instance);
+                }
+            }
         }
 
         internal static void DoSeatSwap(Actor actor, Actor target, ActionScene scene)
@@ -76,12 +90,36 @@ namespace RGActionPatches.Patches
             {
                 // assign some references to clean things up
                 Actor target = currentPoint.Pairing?.AttachedActor;
-                actor.PostedActionPoint = currentPoint;
-                actor.MakePair(target);
+                ActionScene.UnpairActorAndPoint(actor, actor.PostedActionPoint);
+                ActionScene.SetPostedPointIntoActor(actor, currentPoint);
+                ActionScene.PairActorAndPoint(actor, currentPoint);
                 actor.TalkSidePosition = SidePosition.Facing;
                 target.TalkSidePosition = SidePosition.Facing;
+                actor.MakePair(target);
+
                 // then reinitiate the talk
-                actor.ChangeState(RG.Define.StateID.TalkStart, true);
+
+                // if this arrival is the result of a user-controlled action,
+                // reinitiate by changing some states then clear the state manager
+                if (StateManager.Instance.userControlledActor?.InstanceID == actor.InstanceID)
+                {
+                    actor.ChangeState(RG.Define.StateID.TalkStart);
+                    target.ChangeState(RG.Define.StateID.Empty);
+
+                    StateManager.Instance.userControlledActor = null;
+                }
+                else // if it's the result of auto-movement, start up a talk action using the scene
+                {
+                    ActionScene.TalkAfterAction(actor);
+                }
+            }
+        }
+
+        internal static void SpoofMapID(ActionScene scene, Actor actor)
+        {
+            if (IsDateSpot(scene._actionSettings, scene.MapID))
+            {
+                actor.MapID = scene._actionSettings.MapID.Casino;
             }
         }
     }

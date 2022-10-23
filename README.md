@@ -30,14 +30,15 @@ If you believe you've found a bug with RG_ActionPatches, please use the followin
   
   ## Contributing
   If you'd like to contribute to feature development or bug fixing, pull requests are welcome! For convenience in getting set up, here's a table mapping out the project references (paths are relative to your game root directory):
-| Reference                | Path                                             |
-|--------------------------|--------------------------------------------------|
-| `0Harmony`               |  `BepInEx\core\0Harmony.dll`                     |
-| `Assembly-Csharp`        |  `BepInEx\unhollowed\Assembly-CSharp.dll`        |
-| `BepInEx.Core`           |  `BepInEx\core\BepInEx.Core.dlll`                |
-| `BepInEx.IL2CPP`         |  `BepInEx\core\BepInEx.IL2CPP.dll`               |
-| `IL`                     |  `BepInEx\unhollowed\IL.dll`                     |
-| `Il2Cppmscorlib`         |  `BepInEx\unhollowed\Il2Cppmscorlib.dll`         |
-| `Il2CppSystem`           |  `BepInEx\unhollowed\Il2CppSystem.dll`           |
-| `UnhollowerBaseLib`      |  `BepInEx\core\UnhollowerBaseLib.dll`            |
-| `UnityEngine.CoreModule` |  `BepInEx\unhollowed\UnityEngine.CoreModule.dll` |  
+| Reference                | Path                                            |
+|--------------------------|-------------------------------------------------|
+| `0Harmony`               | `BepInEx\core\0Harmony.dll`                     |
+| `Assembly-Csharp`        | `BepInEx\unhollowed\Assembly-CSharp.dll`        |
+| `BepInEx.Core`           | `BepInEx\core\BepInEx.Core.dlll`                |
+| `BepInEx.IL2CPP`         | `BepInEx\core\BepInEx.IL2CPP.dll`               |
+| `IL`                     | `BepInEx\unhollowed\IL.dll`                     |
+| `Il2Cppmscorlib`         | `BepInEx\unhollowed\Il2Cppmscorlib.dll`         |
+| `Il2CppSystem`           | `BepInEx\unhollowed\Il2CppSystem.dll`           |
+| `Il2CppSystem.Core`      | `BepInEx\unhollowed\Il2CppSystem.Core.dll`      |
+| `UnhollowerBaseLib`      | `BepInEx\core\UnhollowerBaseLib.dll`            |
+| `UnityEngine.CoreModule` | `BepInEx\unhollowed\UnityEngine.CoreModule.dll` |

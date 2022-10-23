@@ -43,6 +43,10 @@
       <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Il2CppSystem.Core">
+      <HintPath>..\..\..\..\..\..\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="0Harmony">
@@ -71,13 +75,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddCommands\AddCommands.Hooks.cs" />
+    <Compile Include="AddCommands\AddCommands.Patches.cs" />
+    <Compile Include="Captions.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="DateSpotMovement\DateSpotMovement.Hooks.cs" />
+    <Compile Include="DateSpotMovement\DateSpotMovement.Patches.cs" />
     <Compile Include="Hooks.cs" />
-    <Compile Include="LazyHooks.cs" />
-    <Compile Include="Patches\DateSpotMovement.cs" />
-    <Compile Include="Patches\TalkToSomeone.cs" />
-    <Compile Include="Patches\TalkTarget.cs" />
     <Compile Include="StateManager.cs" />
+    <Compile Include="TalkTarget\TalkTarget.Hooks.cs" />
+    <Compile Include="TalkTarget\TalkTarget.Patches.cs" />
+    <Compile Include="TalkToSomeone\TalkToSomeone.Hooks.cs" />
+    <Compile Include="TalkToSomeone\TalkToSomeone.Patches.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="RGActionPatchesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

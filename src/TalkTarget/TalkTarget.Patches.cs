@@ -1,20 +1,25 @@
-﻿using RG.Scene;
+﻿using BepInEx.Logging;
+using System;
+using Il2CppSystem.Collections.Generic;
+using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
-using Il2CppSystem.Collections.Generic;
 using RG.Scene.Action.UI;
-using BepInEx.Logging;
-using System;
 
-namespace RGActionPatches.Patches
+
+namespace RGActionPatches.TalkTarget
 {
-    class TalkTarget
+    class Patches
     {
         private static ManualLogSource Log = RGActionPatchesPlugin.Log;
-        private const string TalkToSuffix = "に声をかける";
-        private const string InTheToiletCaption = "トイレ中";
-        private const string TalkingToSomeoneCaption = "会話中";
-        private const string InExaminationCaption = "診察中";
+
+        private static readonly System.Collections.Generic.List<string> ExcludedPoints = new System.Collections.Generic.List<string>()
+        {
+            "poledance_actionpoint_00",
+            "poledance_actionpoint_01",
+            "poledance_actionpoint_02",
+            "m_actionpoint_00_doctor"
+        };
 
         internal static void UnrestrictTalkTargetList(ActionScene scene, Actor actor, List<ActionCommand> commands)
         {
@@ -22,8 +27,8 @@ namespace RGActionPatches.Patches
 
             foreach (Actor a in scene._actors)
             {
-                // add anyone else in the scene who's on a point
-                if (a.InstanceID != actor.InstanceID && a.OccupiedActionPoint)
+                // Re-add actors in the scene based on custom criteria
+                if (a.InstanceID != actor.InstanceID && a.OccupiedActionPoint != null)
                 {
                     commands.Add(a.Come2TalkCommand);
                 }
@@ -43,13 +48,13 @@ namespace RGActionPatches.Patches
             {
                 ActionCommand cmd = commandList._selectedCommand.Item1;
                 CommandOption opt = commandList._selectedCommand.Item2;
-                
+
                 if (cmd.Info.ActionType == 3 && cmd.Info.GetActionNameCallback != null && !opt.ActiveDisablePanel)
                 {
                     string actionName = cmd.Info.GetActionNameCallback.Invoke(commandList.ActorDependsOn);
-                    if (actionName.Contains(TalkToSuffix))
+                    if (actionName.Contains(Captions.Actions.SpeakWith))
                     {
-                        string targetName = actionName.Split(TalkToSuffix.ToCharArray())[0].Trim();
+                        string targetName = actionName.Split(Captions.Actions.SpeakWith.ToCharArray())[0].Trim();
                         Func<Actor, bool> predicate = delegate (Actor actor) { return targetName == actor.Status.FullName; };
                         Actor targetActor = scene._actors.Find(predicate);
 
@@ -58,22 +63,42 @@ namespace RGActionPatches.Patches
                             if (targetActor.CommandState == RG.Define.Action.CommandState.InTheToilet)
                             {
                                 opt.ActiveDisablePanel = true;
-                                opt.DisableCaptionStr = InTheToiletCaption;
+                                opt.DisableCaptionStr = Captions.Disabled.InTheToilet;
                             }
                             else if (targetActor.CommandState == RG.Define.Action.CommandState.Communication)
                             {
                                 opt.ActiveDisablePanel = true;
-                                opt.DisableCaptionStr = TalkingToSomeoneCaption;
+                                opt.DisableCaptionStr = Captions.Disabled.TalkingToSomeone;
                             }
-                            else if (targetActor.OccupiedActionPoint?.name == "examination_actionpoint")
+                            else if (targetActor.OccupiedActionPoint?.name == "examination_actionpoint" || targetActor.OccupiedActionPoint?.name == "m_actionpoint_00_doctor")
                             {
                                 opt.ActiveDisablePanel = true;
-                                opt.DisableCaptionStr = InExaminationCaption;
+                                opt.DisableCaptionStr = Captions.Disabled.InExamination;
+                            }
+                            else if (ExcludedPoints.Contains(targetActor.OccupiedActionPoint?.name))
+                            {
+                                opt.ActiveDisablePanel = true;
+                                opt.DisableCaptionStr = Captions.Disabled.Unavailable;
                             }
                         }
                     }
                 }
             }
+        }
+
+        internal static bool IsAvailableToTalk(Actor actor, bool currentResult = false)
+        {
+            if (currentResult)
+            {
+                return true;
+            }
+
+            return (
+                actor != null &&
+                actor.OccupiedActionPoint != null &&
+                actor.CommandState == RG.Define.Action.CommandState.Neutral &&
+                !ExcludedPoints.Contains(actor.OccupiedActionPoint.name)
+            );
         }
     }
 }

@@ -12,7 +12,7 @@ namespace RGActionPatches
     {
         public const string PluginName = "RG Action Patches";
         public const string GUID = "com.bogus.RGActionPatches";
-        public const string Version = "0.0.2";
+        public const string Version = "0.1.0";
         private const string ComponentName = "BogusComponents";
 
         internal static new ManualLogSource Log;
@@ -22,9 +22,9 @@ namespace RGActionPatches
         {
             Log = base.Log;
 
-            RGActionPatches.Config.init(this);
+            RGActionPatches.Config.Init(this);
 
-            if (RGActionPatches.Config.enabled)
+            if (RGActionPatches.Config.Enabled)
             {
                 Harmony.CreateAndPatchAll(typeof(Hooks), GUID);
             }
@@ -37,13 +37,8 @@ namespace RGActionPatches
                 BogusComponents = new GameObject(ComponentName);
                 GameObject.DontDestroyOnLoad(BogusComponents);
                 BogusComponents.hideFlags = HideFlags.HideAndDontSave;
-                BogusComponents.AddComponent<StateManager>();
             }
-            else
-            {
-                BogusComponents.AddComponent<StateManager>();
-            }
-
+            StateManager.Instance = new StateManager(BogusComponents.AddComponent(Il2CppType.Of<StateManager>()).Pointer);
         }
     }
 }

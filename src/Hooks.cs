@@ -1,23 +1,22 @@
 ﻿using HarmonyLib;
 using RG.Scene;
 using RG.Scene.Action.UI;
-using BepInEx.Logging;
-using RG.Scene.Action.Core;
+
 
 namespace RGActionPatches
 {
     internal static class Hooks
     {
-        private static ManualLogSource Log = RGActionPatchesPlugin.Log;
-        private const string LazyGUID = RGActionPatchesPlugin.GUID + ".lazy";
-
         // Capture CommandList instance at scene load and initialize our other patches
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CommandList), nameof(CommandList.Awake))]
         private static void AwakePost(CommandList __instance)
         {
             StateManager.Instance.currentCommandList = __instance;
-            Harmony.CreateAndPatchAll(typeof(LazyHooks), LazyGUID);
+            Harmony.CreateAndPatchAll(typeof(AddCommands.Hooks), AddCommands.Hooks.GUID);
+            Harmony.CreateAndPatchAll(typeof(DateSpotMovement.Hooks), DateSpotMovement.Hooks.GUID);
+            Harmony.CreateAndPatchAll(typeof(TalkTarget.Hooks), TalkTarget.Hooks.GUID);
+            Harmony.CreateAndPatchAll(typeof(TalkToSomeone.Hooks), TalkToSomeone.Hooks.GUID);
         }
 
         // Release CommandList instance on scene destroy and unpatch
@@ -26,7 +25,10 @@ namespace RGActionPatches
         private static void DestroyPre()
         {
             StateManager.Instance.currentCommandList = null;
-            Harmony.UnpatchID(LazyGUID);
+            Harmony.UnpatchID(AddCommands.Hooks.GUID);
+            Harmony.UnpatchID(DateSpotMovement.Hooks.GUID);
+            Harmony.UnpatchID(TalkTarget.Hooks.GUID);
+            Harmony.UnpatchID(TalkToSomeone.Hooks.GUID);
         }
     }
 }
