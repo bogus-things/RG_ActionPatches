@@ -59,7 +59,7 @@ namespace RGActionPatches.AddCommands
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneADV))]
         private static void BeginHSceneADVPre(Actor main, Actor subA, Actor subB)
         {
-            Patches.SpoofMultiple(ActionScene.Instance, main, subA, subB);
+            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
         }
 
         // Temporarily fake the actors' JobIDs before starting the ADV so text lookup doesn't fail
@@ -67,7 +67,7 @@ namespace RGActionPatches.AddCommands
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneOutADV))]
         private static void BeginHSceneOutADVPre(Actor main, Actor subA, Actor subB)
         {
-            Patches.SpoofMultiple(ActionScene.Instance, main, subA, subB);
+            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
         }
 
         // Restore any faked JobIDs upon leaving ADV

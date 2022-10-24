@@ -80,21 +80,24 @@ namespace RGActionPatches.AddCommands
             }
         }
 
-        internal static void SpoofMultiple(ActionScene scene, Actor main, Actor subA = null, Actor subB = null)
+        internal static void SpoofForJobH(ActionScene scene, Actor main, Actor subA = null, Actor subB = null)
         {
-            StateManager.Instance.addSpoofedActor(main, main.JobID);
-            SpoofJobID(scene, main);
-
-            if (subA != null)
+            if(scene._actionSettings.IsJobMap(scene.MapID))
             {
-                StateManager.Instance.addSpoofedActor(subA, subA.JobID);
-                SpoofJobID(scene, subA);
-            }
+                StateManager.Instance.addSpoofedActor(main, main.JobID);
+                SpoofJobID(scene, main);
 
-            if (subB != null)
-            {
-                StateManager.Instance.addSpoofedActor(subB, subB.JobID);
-                SpoofJobID(scene, subB);
+                if (subA != null)
+                {
+                    StateManager.Instance.addSpoofedActor(subA, subA.JobID);
+                    SpoofJobID(scene, subA);
+                }
+
+                if (subB != null)
+                {
+                    StateManager.Instance.addSpoofedActor(subB, subB.JobID);
+                    SpoofJobID(scene, subB);
+                }
             }
         }
 
