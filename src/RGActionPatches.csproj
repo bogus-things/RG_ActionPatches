@@ -81,6 +81,8 @@
     <Compile Include="Config.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Hooks.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Patches.cs" />
+    <Compile Include="Guests\Guests.Hooks.cs" />
+    <Compile Include="Guests\Guests.Patches.cs" />
     <Compile Include="Hooks.cs" />
     <Compile Include="StateManager.cs" />
     <Compile Include="TalkTarget\TalkTarget.Hooks.cs" />

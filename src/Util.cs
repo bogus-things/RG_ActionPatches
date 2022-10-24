@@ -1,4 +1,5 @@
 ﻿using Il2CppSystem.Collections.Generic;
+using Manager;
 using RG.Scene.Action.Core;
 using RG.Scripts;
 using System;
@@ -144,6 +145,23 @@ namespace RGActionPatches
             }
 
             return name;
+        }
+
+        internal static bool ActorIsOnEntryPoint(Actor actor)
+        {
+            if (actor?.OccupiedActionPoint == null || Game.ActionMap.APTContainer._enter == null)
+            {
+                return false;
+            }
+            foreach (ActionPoint enterPoint in Game.ActionMap.APTContainer._enter)
+            {
+                if (actor.OccupiedActionPoint.UniqueID == enterPoint?.UniqueID)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -3,12 +3,14 @@ using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
+using BepInEx.Logging;
 
 namespace RGActionPatches.TalkToSomeone
 {
     class Hooks
     {
         internal static string GUID = RGActionPatchesPlugin.GUID + ".TalkToSomeone";
+        private static ManualLogSource Log = RGActionPatchesPlugin.Log;
 
         // Adds "Talk to someone" to the list of commands available at a point if it's missing
         [HarmonyPostfix]

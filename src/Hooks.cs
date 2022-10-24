@@ -17,6 +17,9 @@ namespace RGActionPatches
             Harmony.CreateAndPatchAll(typeof(DateSpotMovement.Hooks), DateSpotMovement.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(TalkTarget.Hooks), TalkTarget.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(TalkToSomeone.Hooks), TalkToSomeone.Hooks.GUID);
+            Harmony.CreateAndPatchAll(typeof(Guests.Hooks), Guests.Hooks.GUID);
+
+            Guests.Patches.ChangeCommandStates(ActionScene.Instance.Actors);
         }
 
         // Release CommandList instance on scene destroy and unpatch
@@ -29,6 +32,7 @@ namespace RGActionPatches
             Harmony.UnpatchID(DateSpotMovement.Hooks.GUID);
             Harmony.UnpatchID(TalkTarget.Hooks.GUID);
             Harmony.UnpatchID(TalkToSomeone.Hooks.GUID);
+            Harmony.UnpatchID(Guests.Hooks.GUID);
         }
     }
 }

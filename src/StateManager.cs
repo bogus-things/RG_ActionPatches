@@ -23,6 +23,7 @@ namespace RGActionPatches
         internal List<Actor> spoofedActors { get; set; }
 
         internal Actor userControlledActor { get; set; } = null;
+        internal Actor redirectedGuest { get; set; } = null;
 
         internal void addSpoofedActor(Actor actor, int jobID)
         {
