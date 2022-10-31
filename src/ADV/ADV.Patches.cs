@@ -1,10 +1,5 @@
 ﻿using RG.Scene;
 using RG.Scene.Action.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RGActionPatches.ADV
 {

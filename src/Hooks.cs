@@ -23,11 +23,6 @@ namespace RGActionPatches
             Harmony.CreateAndPatchAll(typeof(ADV.Hooks), ADV.Hooks.GUID);
 
             Guests.Patches.ChangeCommandStates(ActionScene.Instance.Actors);
-
-            foreach(ActionPoint p in Game.ActionMap.APTContainer._actionPoints)
-            {
-                Log.LogMessage($"{p.name} {p.UniqueID}");
-            }
         }
 
         // Release CommandList instance on scene destroy and unpatch

@@ -49,7 +49,6 @@ namespace RGActionPatches.AddCommands
 
         internal static void UpdateActorCommands(ActionScene scene, Actor actor, IReadOnlyList<ActionCommand> baseCommands, List<ActionCommand> current)
         {
-            Log.LogMessage(actor.name);
             // Filter out duplicate command names
             DeDupeCommandList(current, actor);
 
@@ -68,7 +67,6 @@ namespace RGActionPatches.AddCommands
             foreach (ActionCommand command in commandsToAdd)
             {
                 string name = Util.GetActionName(command, actor);
-                Log.LogMessage(name);
                 if (name != null && !existingCommandNames.Contains(name))
                 {
                     current.Insert(0, command);
@@ -98,8 +96,6 @@ namespace RGActionPatches.AddCommands
 
             Func<ActionCommand, bool> removePredicate = GetRemovePredicate(actor, isVisitor, examChair, conferenceRoom);
             current.RemoveAll(removePredicate);
-
-            Log.LogMessage("-----");
         }
 
         internal static void AddToPointNeutralCommands(Actor actor, ActionScene scene, int type, List<ActionCommand> current)

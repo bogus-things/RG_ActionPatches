@@ -94,14 +94,12 @@ namespace RGActionPatches.Guests
             }
             else if (StateManager.Instance.guestActor?.InstanceID == actor.InstanceID && state == 0 && Util.ActorIsOnEntryPoint(actor)) // idle on the entry point
             {
-                Log.LogMessage("test2");
                 if (StateManager.Instance.livingRoomGuestSpoof)
                 {
                     StateManager.Instance.livingRoomGuestSpoof = false;
                 }
                 else if (actor.JobID == settings.FindJobID(scene.MapID) && JobPointIDMap.TryGetValue(actor.name, out int jobPointID))
                 {
-                    Log.LogMessage("test3");
                     ActionPoint jobPoint = Game.ActionMap.APTContainer.FindFromUniID(jobPointID);
                     Transform dest = jobPoint?.Destination[0];
                     if (dest == null)
@@ -141,7 +139,6 @@ namespace RGActionPatches.Guests
             {
                 if (actor.InstanceID == StateManager.Instance.redirectedGuestActor?.InstanceID)
                 {
-                    Log.LogMessage("test1");
                     Actor caller = StateManager.Instance.userControlledActor;
                     StateManager.Instance.redirectedGuestActor = null;
                     StateManager.Instance.userControlledActor = null;
