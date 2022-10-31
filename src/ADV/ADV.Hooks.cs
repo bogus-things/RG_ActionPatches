@@ -1,0 +1,56 @@
+﻿using ADV;
+using BepInEx.Logging;
+using HarmonyLib;
+using RG.Scene;
+using RG.Scene.Action.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RGActionPatches.ADV
+{
+    class Hooks
+    {
+        private static ManualLogSource Log = RGActionPatchesPlugin.Log;
+        internal static string GUID = RGActionPatchesPlugin.GUID + ".ADV";
+
+        // Temporarily fake the actors' JobIDs before starting the ADV so text lookup doesn't fail
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneADV))]
+        private static void BeginHSceneADVPre(Actor main, Actor subA, Actor subB)
+        {
+            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
+        }
+
+        // Temporarily fake the actors' JobIDs before starting the ADV so text lookup doesn't fail
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneOutADV))]
+        private static void BeginHSceneOutADVPre(Actor main, Actor subA, Actor subB)
+        {
+            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
+        }
+
+        // Restore any faked JobIDs upon leaving ADV
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BackFromADVScene))]
+        private static void BackFromADVScenePost()
+        {
+            Patches.RestoreSpoofed();
+        }
+
+
+        [HarmonyFinalizer]
+        [HarmonyPatch(typeof(TextScenario), nameof(TextScenario.LoadFile))]
+        private static Exception CatchLoadErrors(Exception __exception, ref bool __result)
+        {
+            if (__exception != null)
+            {
+                __result = false;
+                Log.LogWarning("Failed to load bundle for ADV scenario, skipping");
+            }
+            return null;
+        }
+    }
+}

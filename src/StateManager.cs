@@ -18,17 +18,23 @@ namespace RGActionPatches
         internal CommandList currentCommandList { get; set; } = null;
 
         // need to track these in separate lists because Il2Cpp keeps
-        // owning all my created tuples and objects
+        // yeeting all my created tuples and objects
         internal List<int> originalJobIDs { get; set; }
         internal List<Actor> spoofedActors { get; set; }
 
         internal Actor userControlledActor { get; set; } = null;
-        internal Actor redirectedGuest { get; set; } = null;
+        internal Actor guestActor { get; set; } = null;
+        internal Actor redirectedGuestActor { get; set; } = null;
+        internal bool livingRoomGuestSpoof { get; set; } = false;
 
         internal void addSpoofedActor(Actor actor, int jobID)
         {
-            originalJobIDs.Add(jobID);
-            spoofedActors.Add(actor);
+            if (!spoofedActors.Contains(actor))
+            {
+                originalJobIDs.Add(jobID);
+                spoofedActors.Add(actor);
+            }
+            
         }
 
         internal void restoreSpoofedActors()

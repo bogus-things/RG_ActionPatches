@@ -73,10 +73,16 @@
       <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\..\..\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddCommands\AddCommands.Hooks.cs" />
     <Compile Include="AddCommands\AddCommands.Patches.cs" />
+    <Compile Include="ADV\ADV.Hooks.cs" />
+    <Compile Include="ADV\ADV.Patches.cs" />
     <Compile Include="Captions.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Hooks.cs" />
@@ -87,8 +93,6 @@
     <Compile Include="StateManager.cs" />
     <Compile Include="TalkTarget\TalkTarget.Hooks.cs" />
     <Compile Include="TalkTarget\TalkTarget.Patches.cs" />
-    <Compile Include="TalkToSomeone\TalkToSomeone.Hooks.cs" />
-    <Compile Include="TalkToSomeone\TalkToSomeone.Patches.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="RGActionPatchesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,11 +3,14 @@ using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
+using BepInEx.Logging;
+using RG;
 
 namespace RGActionPatches.AddCommands
 {
     class Hooks
     {
+        private static ManualLogSource Log = RGActionPatchesPlugin.Log;
         internal static string GUID = RGActionPatchesPlugin.GUID + ".AddCommands";
 
         // Add "Talk to someone" to the list of commands if it's been filtered out
@@ -25,7 +28,7 @@ namespace RGActionPatches.AddCommands
         private static void DecideActionPre(Actor actor, out int __state)
         {
             __state = actor.JobID;
-            Patches.SpoofJobID(ActionScene.Instance, actor);
+            Util.SpoofJobID(ActionScene.Instance, actor);
         }
 
         // Restore the actor's JobID after the decision runs
@@ -43,7 +46,7 @@ namespace RGActionPatches.AddCommands
         private static void DecideHigherPriorityActionPre(Actor actor, out int __state)
         {
             __state = actor.JobID;
-            Patches.SpoofJobID(ActionScene.Instance, actor);
+            Util.SpoofJobID(ActionScene.Instance, actor);
         }
 
         // Restore the actor's JobID after the decision runs
@@ -54,28 +57,21 @@ namespace RGActionPatches.AddCommands
             actor._status.JobID = __state;
         }
 
-        // Temporarily fake the actors' JobIDs before starting the ADV so text lookup doesn't fail
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneADV))]
-        private static void BeginHSceneADVPre(Actor main, Actor subA, Actor subB)
-        {
-            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
-        }
-
-        // Temporarily fake the actors' JobIDs before starting the ADV so text lookup doesn't fail
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneOutADV))]
-        private static void BeginHSceneOutADVPre(Actor main, Actor subA, Actor subB)
-        {
-            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
-        }
-
-        // Restore any faked JobIDs upon leaving ADV
+        // Add "Talk to someone" to the list of commands available at a point if it's missing
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BackFromADVScene))]
-        private static void BackFromADVScenePost()
+        [HarmonyPatch(typeof(ActionPoint), nameof(ActionPoint.GetTypeCommandList), new[] { typeof(byte), typeof(Define.Action.Forms), typeof(int), typeof(List<ActionCommand>) })]
+        [HarmonyPriority(Priority.Low)]
+        private static void GetTypeCommandList4Post(ActionPoint __instance, int type, List<ActionCommand> commands)
         {
-            Patches.RestoreSpoofed();
+            Patches.AddToPointNeutralCommands(__instance.AttachedActor, ActionScene.Instance, type, commands);
+        }
+
+        // Add "Move to conference room" to list of commands for office points
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionPoint), nameof(ActionPoint.GetTypeCommandList), new[] { typeof(byte), typeof(int), typeof(int), typeof(List<ActionCommand>) })]
+        private static void GetTypeCommandList3Post(ActionPoint __instance, int type, List<ActionCommand> commands)
+        {
+            Patches.AddToPointSocializeCommands(__instance.AttachedActor, ActionScene.Instance, type, commands);
         }
     }
 }

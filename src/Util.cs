@@ -1,5 +1,6 @@
 ﻿using Il2CppSystem.Collections.Generic;
 using Manager;
+using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
 using System;
@@ -131,12 +132,17 @@ namespace RGActionPatches
 
         internal static string GetActionName(ActionCommand command, Actor actor)
         {
-            string name = command.Info.ActionName;
+            return GetActionName(command.Info, actor);
+        }
+
+        internal static string GetActionName(ActionInfo info, Actor actor)
+        {
+            string name = info.ActionName;
             if (name == null)
             {
                 try
                 {
-                    name = command.Info.GetActionNameCallback.Invoke(actor);
+                    name = info.GetActionNameCallback.Invoke(actor);
                 }
                 catch (Exception)
                 {
@@ -145,6 +151,23 @@ namespace RGActionPatches
             }
 
             return name;
+        }
+
+        internal static bool IsEntryPoint(ActionPoint point)
+        {
+            if (point == null || Game.ActionMap.APTContainer._enter == null)
+            {
+                return false;
+            }
+            foreach (ActionPoint enterPoint in Game.ActionMap.APTContainer._enter)
+            {
+                if (point.UniqueID == enterPoint?.UniqueID)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         internal static bool ActorIsOnEntryPoint(Actor actor)
@@ -162,6 +185,31 @@ namespace RGActionPatches
             }
 
             return false;
+        }
+
+        internal static Func<ActionCommand, bool> GetFindPredicate(Actor actor, string cmdName)
+        {
+            return (ActionCommand cmd) => {
+                string name = GetActionName(cmd, actor);
+                return name == cmdName;
+            };
+        }
+
+        internal static Func<ActionInfo, bool> GetInfoFindPredicate(Actor actor, string cmdName)
+        {
+            return (ActionInfo info) => {
+                string name = GetActionName(info, actor);
+                return name == cmdName;
+            };
+        }
+
+        internal static void SpoofJobID(ActionScene scene, Actor actor)
+        {
+            int mapJobID = scene._actionSettings.FindJobID(actor.MapID);
+            if (actor.JobID > -1 && actor.JobID != mapJobID)
+            {
+                actor._status.JobID = mapJobID;
+            }
         }
     }
 }

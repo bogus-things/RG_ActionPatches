@@ -1,12 +1,15 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
+using Manager;
 using RG.Scene;
+using RG.Scene.Action.Core;
 using RG.Scene.Action.UI;
-
 
 namespace RGActionPatches
 {
     internal static class Hooks
     {
+        private static ManualLogSource Log = RGActionPatchesPlugin.Log;
         // Capture CommandList instance at scene load and initialize our other patches
         [HarmonyPostfix]
         [HarmonyPatch(typeof(CommandList), nameof(CommandList.Awake))]
@@ -16,10 +19,15 @@ namespace RGActionPatches
             Harmony.CreateAndPatchAll(typeof(AddCommands.Hooks), AddCommands.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(DateSpotMovement.Hooks), DateSpotMovement.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(TalkTarget.Hooks), TalkTarget.Hooks.GUID);
-            Harmony.CreateAndPatchAll(typeof(TalkToSomeone.Hooks), TalkToSomeone.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(Guests.Hooks), Guests.Hooks.GUID);
+            Harmony.CreateAndPatchAll(typeof(ADV.Hooks), ADV.Hooks.GUID);
 
             Guests.Patches.ChangeCommandStates(ActionScene.Instance.Actors);
+
+            foreach(ActionPoint p in Game.ActionMap.APTContainer._actionPoints)
+            {
+                Log.LogMessage($"{p.name} {p.UniqueID}");
+            }
         }
 
         // Release CommandList instance on scene destroy and unpatch
@@ -31,8 +39,8 @@ namespace RGActionPatches
             Harmony.UnpatchID(AddCommands.Hooks.GUID);
             Harmony.UnpatchID(DateSpotMovement.Hooks.GUID);
             Harmony.UnpatchID(TalkTarget.Hooks.GUID);
-            Harmony.UnpatchID(TalkToSomeone.Hooks.GUID);
             Harmony.UnpatchID(Guests.Hooks.GUID);
+            Harmony.UnpatchID(ADV.Hooks.GUID);
         }
     }
 }

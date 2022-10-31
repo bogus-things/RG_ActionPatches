@@ -11,6 +11,7 @@ namespace RGActionPatches
         internal class Actions
         {
             internal static string TalkToSomeone { get { return "人と話す"; } }
+            internal static string CallSomeone { get { return "人を呼ぶ"; } }
             internal static string SpeakWith { get { return "に声をかける"; } }
             internal static string GoToPoleDanceArea { get { return "ポールダンス台に行く"; } }
             internal static string GoToPoleDanceFront { get { return "ポールダンス前に行く"; } }
@@ -19,6 +20,16 @@ namespace RGActionPatches
             internal static string TalkToPatient { get { return "話しかける"; } }
             internal static string Seduce { get { return "誘惑する"; } }
             internal static string GoToExamChair { get { return "診察椅子に移動"; } }
+            internal static string Leave { get { return "退出する"; } }
+            internal static string OfferH { get { return "エッチを持ちかける"; } }
+            internal static string OfferMMF { get { return "男複数エッチを持ちかける"; } }
+            internal static string OfferFFM { get { return "複数エッチを持ちかける"; } }
+            internal static string GoToCouch { get { return "ソファーの様子を見る"; } }
+            internal static string TakeBath { get { return "お風呂に入る"; } }
+            internal static string DoKitchenH { get { return "キッチンでエッチする"; } }
+            internal static string DoChangingRoomH { get { return "脱衣所でエッチする"; } }
+            internal static string DoBathH { get { return "お風呂でエッチする"; } }
+            internal static string MoveToConferenceRoom { get { return "会議室に移動"; } }
         }
 
         internal class Disabled

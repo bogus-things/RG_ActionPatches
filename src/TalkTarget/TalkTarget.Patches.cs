@@ -18,7 +18,10 @@ namespace RGActionPatches.TalkTarget
             "poledance_actionpoint_00",
             "poledance_actionpoint_01",
             "poledance_actionpoint_02",
-            "m_actionpoint_00_doctor"
+            "examination_actionpoint",
+            "m_actionpoint_00_doctor",
+            "meeting_00_01",
+            "meeting_00_00"
         };
 
         internal static void UnrestrictTalkTargetList(ActionScene scene, Actor actor, List<ActionCommand> commands)
