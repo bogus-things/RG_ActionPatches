@@ -30,6 +30,7 @@ namespace RGActionPatches
             internal static string DoChangingRoomH { get { return "脱衣所でエッチする"; } }
             internal static string DoBathH { get { return "お風呂でエッチする"; } }
             internal static string MoveToConferenceRoom { get { return "会議室に移動"; } }
+            internal static string ReturnToRoom { get { return "部屋に戻る"; } }
         }
 
         internal class Disabled

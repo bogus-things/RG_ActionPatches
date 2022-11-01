@@ -37,6 +37,7 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.TalkToPatient,
             Captions.Actions.Seduce,
             Captions.Actions.MoveToConferenceRoom,
+            Captions.Actions.ReturnToRoom
         };
 
         // Some commands should only be added if their availability conditions are met

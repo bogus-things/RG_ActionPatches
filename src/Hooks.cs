@@ -1,8 +1,6 @@
 ﻿using BepInEx.Logging;
 using HarmonyLib;
-using Manager;
 using RG.Scene;
-using RG.Scene.Action.Core;
 using RG.Scene.Action.UI;
 
 namespace RGActionPatches

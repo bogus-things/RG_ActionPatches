@@ -29,20 +29,21 @@ namespace RGActionPatches.Guests
         // in living room to bypass buggy animation
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.PopGuest))]
-        private static void PopGuestPre(Actor actor, ref int __state)
+        private static void PopGuestPre(Actor actor, ref (int, int, int) __state)
         {
             ActionScene scene = ActionScene.Instance;
             StateManager.Instance.guestActor = actor;
-            __state = actor.JobID;
-
+            __state = (actor.JobID, actor.PrivateID, actor.WorkplaceID);
             Patches.DoLivingRoomSpoof(scene, actor);
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.PopGuest))]
-        private static void PopGuestPost(Actor actor, int __state)
+        private static void PopGuestPost(Actor actor, (int, int, int) __state)
         {
-            actor._status.JobID = __state;
+            actor._status.JobID = __state.Item1;
+            actor.PrivateID = __state.Item2;
+            actor.WorkplaceID = __state.Item3;
             Patches.AddGuestToVisitors(ActionScene.Instance, actor);
         }
 
