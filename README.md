@@ -4,7 +4,7 @@ A collection of Harmony patches to unlock &amp; add restricted or missing charac
 ## Features
 - Adds "Talk to someone" action for characters outside their workplaces (i.e. visitng the casino or clinic)
 - Adds all currently available actors in a scene to the target list for "talk to someone", allowing characters to talk to non-coworkers
-- Adds support for "Talk to someone" at date spots (cafe, casino, park), allowing single visitors to talk to each other and single visitors to steal seats from characters in the bathroom
+- Adds support for "Talk to someone" at date spots (cafe, restaurant, park), allowing single visitors to talk to each other and single visitors to steal seats from characters in the bathroom
 - Adds some other previously job-restricted actions for characters visiting a map
 - Patches support for these additions into the game's autoplay functionality
 
