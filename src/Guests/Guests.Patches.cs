@@ -487,6 +487,17 @@ namespace RGActionPatches.Guests
             }
         }
 
+        internal static void RestoreActorUponSaveOptionOpened(RG.Scene.Home.UI.SaveLoadWindow.Mode mode)
+        {
+            if (ActionScene.Instance != null && mode == RG.Scene.Home.UI.SaveLoadWindow.Mode.Save)
+            {
+                if (ActionScene.Instance._actionSettings.IsPrivate(ActionScene.Instance.MapID))
+                {
+                    RestoreActorFromBadFriend();
+                }
+            }
+        }
+
         //////Obsolete as a more straight forward method is found
         ////internal static void AlterGuestDictionaryWhenEnteringMap(int mapID, int subMapID)
         ////{

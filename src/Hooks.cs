@@ -21,7 +21,6 @@ namespace RGActionPatches
             Harmony.CreateAndPatchAll(typeof(ADV.Hooks), ADV.Hooks.GUID);
 
             Guests.Patches.ChangeCommandStates(ActionScene.Instance.Actors);
-            //Guests.Patches.RecoverGuestDictionary();
         }
 
         // Release CommandList instance on scene destroy and unpatch
@@ -43,6 +42,14 @@ namespace RGActionPatches
         private static void InitializePartnerStatePre(ActionScene __instance , Il2CppSystem.Collections.Generic.List<RG.Scene.Action.Core.Actor> actors)
         {
             Guests.Patches.RemoveGuestsDoNotBelongToScene(__instance, actors);
+        }
+
+        //Handle the case of saving during the scene map
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(RG.Scene.Home.UI.SaveLoadWindow), nameof(RG.Scene.Home.UI.SaveLoadWindow.OpenTargetSaveLoadWindow))]
+        private static void OpenTargetSaveLoadWindow(RG.Scene.Home.UI.SaveLoadWindow.Mode mode, bool isTitleScene)
+        {
+            Guests.Patches.RestoreActorUponSaveOptionOpened(mode);
         }
     }
 }
