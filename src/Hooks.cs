@@ -21,7 +21,7 @@ namespace RGActionPatches
             Harmony.CreateAndPatchAll(typeof(ADV.Hooks), ADV.Hooks.GUID);
 
             Guests.Patches.ChangeCommandStates(ActionScene.Instance.Actors);
-            Guests.Patches.RecoverGuestDictionary();
+            //Guests.Patches.RecoverGuestDictionary();
         }
 
         // Release CommandList instance on scene destroy and unpatch
@@ -36,15 +36,13 @@ namespace RGActionPatches
             Harmony.UnpatchID(Guests.Hooks.GUID);
             Harmony.UnpatchID(ADV.Hooks.GUID);
         }
-
-        //For fixing the bug that load a guest wrongly in private room due to no sub-map case handling when loading guests
+                
+        //Check the MapID and SubMapID(PrivateKeyID) and remove guest actors that do not belong to the private map
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(HomeScene), nameof(HomeScene.GoIntoMap), new System.Type[] { typeof(int), typeof(byte), typeof(int), typeof(int), typeof(int), typeof(int) })]
-        private static void GoIntoMap(int mapID, byte sex, int memberKey, int charaJobID, int charaIndexAsMob, int subMapID)
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.InitializePartnerState))]
+        private static void InitializePartnerStatePre(ActionScene __instance , Il2CppSystem.Collections.Generic.List<RG.Scene.Action.Core.Actor> actors)
         {
-            Guests.Patches.AlterGuestDictionaryWhenEnteringMap(mapID, subMapID);
+            Guests.Patches.RemoveGuestsDoNotBelongToScene(__instance, actors);
         }
-
-
     }
 }

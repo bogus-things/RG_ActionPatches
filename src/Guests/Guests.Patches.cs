@@ -472,54 +472,71 @@ namespace RGActionPatches.Guests
             }
         }
 
-        internal static void AlterGuestDictionaryWhenEnteringMap(int mapID, int subMapID)
+        internal static void RemoveGuestsDoNotBelongToScene(ActionScene scene, List<Actor> actors)
         {
-            if (Util.IsPrivateMap(mapID))
+            if (scene._actionSettings.IsPrivate(scene.MapID))
             {
-                if (Manager.Game.UserFile.DicVisitors.ContainsKey(mapID))
+                for (var n = actors.Count - 1; n >= 0; n--)
                 {
-                    RG.User.MemberInfoList list = Manager.Game.UserFile.DicVisitors[mapID];
-                    //Back up the list
-                    for (int i = 0; i < list.Count; i++)
+                    if (actors[n].SubMapID != scene.PrivateKeyID)
                     {
-                        StateManager.Instance.privateRoomGuestListBackup.Add(Util.CloneMemberInfo(list[i]));
-                    }
-                    //Now remove the item from DicVisitor if the sub map ID not match
-                    for (int n = list.Count - 1; n >= 0; n--)
-                    {
-                        foreach (var kvpStatus in Manager.Game.UserFile.DicStatusArchive[mapID])
-                        {
-                            RG.User.Status status = kvpStatus.Value;
-                            if (list[n].IsSame(status))
-                            {
-                                if (status.SubMapID != subMapID)
-                                {
-                                    //Remove the item from DicVisitor due to submap id not match so that it wont load the wrong guest
-                                    list.RemoveAt(n);
-                                }
-                                break;
-                            }
-                        }
+                        scene.Unload(actors[n]);
+                        actors.RemoveAt(n);
                     }
                 }
             }
         }
 
-        internal static void RecoverGuestDictionary()
-        {
-            //add back the member info once the map is loaded
-            if (ActionScene.IsCurrentPrivateMap())
-            {
-                var mapIDs = ActionScene.Instance._actionSettings._mapIDs;
-                if (StateManager.Instance.privateRoomGuestListBackup.Count > 0)
-                {
-                    Manager.Game.UserFile.DicVisitors.Remove(ActionScene.Instance.MapID);
-                    Manager.Game.UserFile.DicVisitors[ActionScene.Instance.MapID] = StateManager.Instance.privateRoomGuestListBackup;
+        //////Obsolete as a more straight forward method is found
+        ////internal static void AlterGuestDictionaryWhenEnteringMap(int mapID, int subMapID)
+        ////{
+        ////    if (Util.IsPrivateMap(mapID))
+        ////    {
+        ////        if (Manager.Game.UserFile.DicVisitors.ContainsKey(mapID))
+        ////        {
+        ////            RG.User.MemberInfoList list = Manager.Game.UserFile.DicVisitors[mapID];
+        ////            //Back up the list
+        ////            for (int i = 0; i < list.Count; i++)
+        ////            {
+        ////                StateManager.Instance.privateRoomGuestListBackup.Add(Util.CloneMemberInfo(list[i]));
+        ////            }
+        ////            //Now remove the item from DicVisitor if the sub map ID not match
+        ////            for (int n = list.Count - 1; n >= 0; n--)
+        ////            {
+        ////                foreach (var kvpStatus in Manager.Game.UserFile.DicStatusArchive[mapID])
+        ////                {
+        ////                    RG.User.Status status = kvpStatus.Value;
+        ////                    if (list[n].IsSame(status))
+        ////                    {
+        ////                        if (status.SubMapID != subMapID)
+        ////                        {
+        ////                            //Remove the item from DicVisitor due to submap id not match so that it wont load the wrong guest
+        ////                            list.RemoveAt(n);
+        ////                        }
+        ////                        break;
+        ////                    }
+        ////                }
+        ////            }
+        ////        }
+        ////    }
+        ////}
 
-                    StateManager.Instance.privateRoomGuestListBackup = new RG.User.MemberInfoList();
+        //////Obsolete as a more straight forward method is found
+        ////internal static void RecoverGuestDictionary()
+        ////{
+        ////    //add back the member info once the map is loaded
+        ////    if (ActionScene.IsCurrentPrivateMap())
+        ////    {
+        ////        var mapIDs = ActionScene.Instance._actionSettings._mapIDs;
+        ////        if (StateManager.Instance.privateRoomGuestListBackup.Count > 0)
+        ////        {
+        ////            Manager.Game.UserFile.DicVisitors.Remove(ActionScene.Instance.MapID);
+        ////            Manager.Game.UserFile.DicVisitors[ActionScene.Instance.MapID] = StateManager.Instance.privateRoomGuestListBackup;
 
-                }
-            }
-        }
+        ////            StateManager.Instance.privateRoomGuestListBackup = new RG.User.MemberInfoList();
+
+        ////        }
+        ////    }
+        ////}
     }
 }
