@@ -1,5 +1,6 @@
 ﻿using RG.Scene.Action.Core;
 using RG.Scene.Action.UI;
+using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace RGActionPatches
         {
             originalJobIDs = new List<int>(3);
             spoofedActors = new List<Actor>(3);
+            dictPrivateRoomSpoof = new Dictionary<string, int>();
+            privateRoomGuestListBackup = new RG.User.MemberInfoList();
         }
 
         internal static StateManager Instance;
@@ -26,7 +29,9 @@ namespace RGActionPatches
         internal Actor guestActor { get; set; } = null;
         internal Actor redirectedGuestActor { get; set; } = null;
         internal bool livingRoomGuestSpoof { get; set; } = false;
-
+        //key: actor chara file name, value: original job id
+        internal Dictionary<string, int> dictPrivateRoomSpoof { get; set; } = null;
+        internal RG.User.MemberInfoList privateRoomGuestListBackup { get; set; }
         internal void addSpoofedActor(Actor actor, int jobID)
         {
             if (!spoofedActors.Contains(actor))

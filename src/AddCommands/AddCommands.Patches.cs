@@ -18,7 +18,8 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.TakeBath,
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
-            Captions.Actions.TalkToSomeone
+            Captions.Actions.TalkToSomeone,
+            Captions.Actions.OfferMMF
         };
 
         private static readonly System.Collections.Generic.List<string> MaleCommandsToAdd = new System.Collections.Generic.List<string>()
@@ -27,7 +28,8 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.DoKitchenH,
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
-            Captions.Actions.TalkToSomeone
+            Captions.Actions.TalkToSomeone,
+            Captions.Actions.OfferMMF
         };
 
         private static readonly System.Collections.Generic.List<string> JobRestrictedCommands = new System.Collections.Generic.List<string>()
@@ -136,6 +138,132 @@ namespace RGActionPatches.AddCommands
             }
         }
 
+
+        internal static void SpoofActorList(ActionScene scene, Actor actor, ref List<Actor> spoofActorList)
+        {
+            //Only apply to private room
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                //Temporary remove all the actors other than the caller from the action scene, so that the full summon list is generated
+                //Additional condition on the summon list is applied in the getSummonCommandListPost 
+                spoofActorList = new List<Actor>();
+                for (var n = scene._actors.Count - 1; n >= 0; n--)
+                {
+
+                    if (scene._actors[n].InstanceID != actor.InstanceID)
+                    {
+                        spoofActorList.Add(scene._actors[n]);
+                        scene._actors.RemoveAt(n);
+
+                    }
+                }
+            }
+        }
+
+        internal static void UpdateSummonCommandList(ActionScene scene, Actor actor, List<ActionCommand> commandList, List<Actor> spoofActorList)
+        {
+            //Only apply to private room
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                //Attached the actors back to the scene
+                foreach (var a in spoofActorList)
+                {
+                    scene._actors.Add(a);
+                }
+
+                if (scene._actors.Count >= 3)
+                {
+                    //1. the private room can only allow 3 person max
+                    commandList.Clear();
+                    actor._summonCommands.Clear();
+                }
+                else if (scene._actors.Count >= 2)
+                {
+                    //2. if a character has already taken the position next with the main actor, summoning female into this room is not allowed
+                    //   this requirement can be viewed as fulfilling : (a) 2+ characters in the room & (b) no character is reserving in the bad friend action point   
+                    if (!Util.IsBadFriendActionPointReserved(scene))
+                    {
+                        Dictionary<string, RG.User.Status> actorContactList = new Dictionary<string, RG.User.Status>();     //Key: name, Value: Status
+                        foreach (Dictionary<string, RG.User.Relation> dictRelation in actor.Status.RelationshipParameter)
+                        {
+                            foreach (KeyValuePair<string, RG.User.Relation> kvp in dictRelation)
+                            {
+                                RG.User.Status status = Util.GetStatusFromArchive(kvp.Key);
+                                if (status != null)
+                                {
+                                    if (!actorContactList.ContainsKey(status.FullName))
+                                        actorContactList.Add(status.FullName, status);
+                                }
+
+
+                            }
+                        }
+
+                        //Scan through the command list and remove the command that summon female character
+                        //Note: Currently using name to find out whether the character is female or not since only name is left in the command and no idea on how to create a summon command.
+                        //      Will have problem if there are male and female characters with same name in the game.
+                        for (var n = commandList.Count - 1; n >= 0; n--)
+                        {
+                            string charaName = commandList[n].Info.ActionName.Replace(Captions.Actions.SummonSomeone, string.Empty);
+                            if (actorContactList.ContainsKey(charaName))
+                            {
+                                if (actorContactList[charaName].Sex == 1)
+                                {
+                                    commandList.RemoveAt(n);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                actor._summonCommands = commandList;
+            }
+        }
+
+        internal static void UpdateMMFTargetCommandList(ActionScene scene, List<ActionCommand> commandList)
+        {
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                commandList.Clear();
+                if (scene._femaleActors.Count == 1 && scene._maleActors.Count == 2)
+                {
+                    foreach (var female in scene._femaleActors)
+                    {
+                        commandList.Add(female.Come2TalkMMFCommand);
+                    }
+                }
+            }
+        }
+
+        internal static void UpdateFFMTargetCommandList(ActionScene scene, List<ActionCommand> commandList)
+        {
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                commandList.Clear();
+                if (scene._femaleActors.Count == 2 && scene._maleActors.Count == 1)
+                {
+                    foreach (var female in scene._femaleActors)
+                    {
+                        commandList.Add(female.Come2TalkFFMCommand);
+                    }
+                }
+            }
+        }
+
+
+        internal static void SpoofActorAsBadFriend(ActionScene scene)
+        {
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                foreach (Actor actor in scene._maleActors)
+                {
+                    if (!StateManager.Instance.dictPrivateRoomSpoof.ContainsKey(actor.CharaFileName))
+                        StateManager.Instance.dictPrivateRoomSpoof.Add(actor.CharaFileName, actor.JobID);
+                    actor._status.JobID = (int)Define.JobID.Badfriend;
+                }
+            }
+        }
+
         private static Func<ActionCommand, bool> GetRemovePredicate(Actor actor, bool isVisitor, bool examChair, bool conferenceRoom)
         {
             return (ActionCommand cmd) =>
@@ -172,6 +300,18 @@ namespace RGActionPatches.AddCommands
                 System.Collections.Generic.List<string> toAdd = actor.Sex == 0 ? MaleCommandsToAdd : FemaleCommandsToAdd;
                 string name = Util.GetActionName(cmd, actor);
                 include = name != null && toAdd.Contains(name);
+
+                //special case handling for MMF in private room
+                if (include && name == Captions.Actions.OfferMMF)
+                {
+                    if (ActionScene.Instance._actionSettings.IsPrivate(ActionScene.Instance.MapID))
+                    {
+                        if (ActionScene.Instance._femaleActors.Count == 1 && ActionScene.Instance._maleActors.Count == 2)
+                            return true;
+                    }
+                    return false;
+                }
+
                 if (include && AvailabilityRestrictedCommands.Contains(name))
                 {
                     include = cmd.IsAvailableCondition.Invoke(actor, cmd.Info);

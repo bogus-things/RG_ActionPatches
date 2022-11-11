@@ -31,6 +31,7 @@ namespace RGActionPatches
             internal static string DoBathH { get { return "お風呂でエッチする"; } }
             internal static string MoveToConferenceRoom { get { return "会議室に移動"; } }
             internal static string ReturnToRoom { get { return "部屋に戻る"; } }
+            internal static string SummonSomeone { get { return "を呼ぶ"; } }
         }
 
         internal class Disabled

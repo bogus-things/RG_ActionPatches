@@ -32,49 +32,49 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
+      <HintPath>ref\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL">
-      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\IL.dll</HintPath>
+      <HintPath>ref\IL.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppSystem">
-      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
+      <HintPath>ref\Il2CppSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppSystem.Core">
-      <HintPath>..\..\..\..\..\..\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.Core.dll</HintPath>
+      <HintPath>ref\Il2CppSystem.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="0Harmony">
-      <HintPath>C:\Games\RoomGirl\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath>ref\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Core">
-      <HintPath>C:\Games\RoomGirl\BepInEx\core\BepInEx.Core.dll</HintPath>
+      <HintPath>ref\BepInEx.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.IL2CPP">
-      <HintPath>C:\Games\RoomGirl\BepInEx\core\BepInEx.IL2CPP.dll</HintPath>
+      <HintPath>ref\BepInEx.IL2CPP.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>ref\Il2Cppmscorlib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnhollowerBaseLib">
-      <HintPath>C:\Games\RoomGirl\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
+      <HintPath>ref\UnhollowerBaseLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>ref\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\..\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
+      <HintPath>ref\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -85,6 +85,7 @@
     <Compile Include="ADV\ADV.Patches.cs" />
     <Compile Include="Captions.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Constant.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Hooks.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Patches.cs" />
     <Compile Include="Guests\Guests.Hooks.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="StateManager.cs" />
     <Compile Include="TalkTarget\TalkTarget.Hooks.cs" />
     <Compile Include="TalkTarget\TalkTarget.Patches.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="RGActionPatchesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

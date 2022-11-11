@@ -33,7 +33,9 @@ namespace RGActionPatches.TalkTarget
                 // Re-add actors in the scene based on custom criteria
                 if (a.InstanceID != actor.InstanceID && a.OccupiedActionPoint != null)
                 {
-                    commands.Add(a.Come2TalkCommand);
+                    //additional checking for the private room: talk to the actor in the bad friend action point will have bug so do not add it to the list
+                    if (!(scene._actionSettings.IsPrivate(scene.MapID) && a.OccupiedActionPoint.UniqueID == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID))
+                        commands.Add(a.Come2TalkCommand);
                 }
             }
         }

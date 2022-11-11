@@ -98,7 +98,7 @@ namespace RGActionPatches.Guests
                 {
                     StateManager.Instance.livingRoomGuestSpoof = false;
                 }
-                else if (actor.JobID == settings.FindJobID(scene.MapID) && JobPointIDMap.TryGetValue(actor.name, out int jobPointID))
+                else if ((actor.JobID == settings.FindJobID(scene.MapID) || settings.IsPrivate(scene.MapID)) && JobPointIDMap.TryGetValue(actor.name, out int jobPointID))
                 {
                     ActionPoint jobPoint = Game.ActionMap.APTContainer.FindFromUniID(jobPointID);
                     Transform dest = jobPoint?.Destination[0];
@@ -159,7 +159,9 @@ namespace RGActionPatches.Guests
                     if (caller != null)
                     {
                         caller.CompleteAction();
-                        caller.TalkTo(actor);
+                        //Special case: in private room do not go to talk with the entering guest as talking in bad friend action point is bugged
+                        if (!scene._actionSettings.IsPrivate(scene.MapID))
+                            caller.TalkTo(actor);
                     }
                 }
             }
@@ -192,29 +194,63 @@ namespace RGActionPatches.Guests
             }
         }
 
-        internal static void AddGuestToVisitors(ActionScene scene, Actor actor)
+        private static void AddGuestToVisitors(ActionScene scene, Actor actor)
         {
-            if (scene._actionSettings.IsJobMap(scene.MapID))
+
+            Int32KeyDictionary<MemberInfoList> visitors = Game.UserFile.DicVisitors;
+            MemberInfoList infoList = null;
+            foreach (int mapID in visitors.Keys)
+            {
+                if (mapID == ActionScene.Instance.MapID)
+
+                {
+                    infoList = visitors[mapID];
+                    break;
+                }
+            }
+            if (infoList == null)
+            {
+                infoList = new MemberInfoList();
+                visitors.Add(ActionScene.Instance.MapID, infoList);
+            }
+            infoList.Add(actor.MyMemberInfo);
+
+
+        }
+
+        //need to add to guest dict if the entering character is going to occupy the bad friend action point
+        internal static void AddPrivateRoomGuestToVisitors(ActionScene scene, Actor actor)
+        {
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                //For bad friend character, do not add to guest list or it will render duplicate actor when re-entering the scene
+                if (scene._actors.Count > 2 && !Util.IsBadFriendActionPointReserved(scene) && StateManager.Instance.dictPrivateRoomSpoof[actor.CharaFileName] != (int)Define.JobID.Badfriend)
+                {
+                    //need to store the correct info in guest list to load the char
+                    RG.User.MemberInfo info = actor.MyMemberInfo;
+                    if (StateManager.Instance.dictPrivateRoomSpoof.ContainsKey(actor.CharaFileName))
+
+
+                    {
+                        actor._status.JobID = StateManager.Instance.dictPrivateRoomSpoof[actor.CharaFileName];
+
+                    }
+
+                    AddGuestToVisitors(scene, actor);
+                    //Change back to bad friend
+                    actor.Status.JobID = (int)Define.JobID.Badfriend;
+                }
+            }
+        }
+
+        internal static void AddJobMapGuestToVisitors(ActionScene scene, Actor actor)
+        {
+            if (scene._actionSettings.IsJobMap(scene.MapID) && !scene._actionSettings.IsPrivate(scene.MapID))
             {
                 int mapJobID = scene._actionSettings.FindJobID(scene.MapID);
                 if (actor.JobID > -1 && actor.JobID != mapJobID)
                 {
-                    Int32KeyDictionary<MemberInfoList> visitors = Game.UserFile.DicVisitors;
-                    MemberInfoList infoList = null;
-                    foreach (int mapID in visitors.Keys)
-                    {
-                        if (mapID == ActionScene.Instance.MapID)
-                        {
-                            infoList = visitors[mapID];
-                            break;
-                        }
-                    }
-                    if (infoList == null)
-                    {
-                        infoList = new MemberInfoList();
-                        visitors.Add(ActionScene.Instance.MapID, infoList);
-                    }
-                    infoList.Add(actor.MyMemberInfo);
+                    AddGuestToVisitors(scene, actor);
                 }
             }
         }
@@ -344,6 +380,146 @@ namespace RGActionPatches.Guests
                 point = Game.ActionMap.APTContainer.FindFromUniID(pointID);
             }
             return point._autoCommands[sex][0];
+        }
+
+        internal static void SpoofActorAsBadFriend(ActionScene scene)
+        {
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+            {
+                foreach (Actor actor in scene._maleActors)
+                {
+                    if (!StateManager.Instance.dictPrivateRoomSpoof.ContainsKey(actor.CharaFileName))
+                        StateManager.Instance.dictPrivateRoomSpoof.Add(actor.CharaFileName, actor.JobID);
+                    actor._status.JobID = (int)Define.JobID.Badfriend;
+                }
+            }
+        }
+
+        internal static void RestoreActorFromBadFriend()
+        {
+            foreach (KeyValuePair<string, int> kvp in StateManager.Instance.dictPrivateRoomSpoof)
+            {
+                foreach (RG.User.StatusDictionary statusDict in Manager.Game.UserFile.DicStatusArchive)
+                {
+                    foreach (KeyValuePair<string, RG.User.Status> status in statusDict)
+                    {
+                        if (status.Value.CharaFileName == kvp.key)
+                        {
+                            status.Value.JobID = kvp.Value;
+
+                            //also need to restore the partner info value in the main actor
+                            var mainActorStatus = Util.GetStatusFromArchive(status.Value.PartnerInfo);
+                            RG.User.MemberInfo myInfo = new RG.User.MemberInfo();
+                            myInfo.KeyID = status.Value.KeyID;
+                            myInfo.JobID = status.Value.JobID;
+                            myInfo.Sex = status.Value.Sex;
+                            myInfo.IndexAsMob = status.Value.IndexAsMob;
+                            if (mainActorStatus != null)
+                            {
+                                mainActorStatus.PartnerInfo = myInfo;
+                            }
+                            else
+                            {
+                                mainActorStatus = Util.GetStatusFromArchive(status.Value.StashingPartnerInfo);
+                                if (mainActorStatus != null)
+                                {
+                                    mainActorStatus.StashingPartnerInfo = myInfo;
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+            }
+            StateManager.Instance.dictPrivateRoomSpoof.Clear();
+        }
+
+        internal static void RestoreActorFromBadFriend(Actor actor)
+        {
+            foreach (KeyValuePair<string, int> kvp in StateManager.Instance.dictPrivateRoomSpoof)
+            {
+                if (kvp.Key == actor.CharaFileName)
+                {
+                    foreach (RG.User.StatusDictionary statusDict in Manager.Game.UserFile.DicStatusArchive)
+                    {
+                        foreach (KeyValuePair<string, RG.User.Status> status in statusDict)
+                        {
+                            if (status.Value.CharaFileName == kvp.key)
+                            {
+                                status.Value.JobID = kvp.Value;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            StateManager.Instance.dictPrivateRoomSpoof.Remove(actor.CharaFileName);
+        }
+
+        //Fix for the empty script issue when talking happen in private room due to the job id is forced to change to bad friend
+        internal static void FixPrivateRoomMissingTalkingScript(Actor actor, int state)
+        {
+            if (ActionScene.Instance._actionSettings.IsPrivate(ActionScene.Instance.MapID))
+            {
+                if (actor.Sex == 0)
+                {
+                    if (state == 10 || state == 31)
+                    {
+                        RestoreActorFromBadFriend(actor);
+                    }
+                }
+            }
+        }
+
+        internal static void AlterGuestDictionaryWhenEnteringMap(int mapID, int subMapID)
+        {
+            if (Util.IsPrivateMap(mapID))
+            {
+                if (Manager.Game.UserFile.DicVisitors.ContainsKey(mapID))
+                {
+                    RG.User.MemberInfoList list = Manager.Game.UserFile.DicVisitors[mapID];
+                    //Back up the list
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        StateManager.Instance.privateRoomGuestListBackup.Add(Util.CloneMemberInfo(list[i]));
+                    }
+                    //Now remove the item from DicVisitor if the sub map ID not match
+                    for (int n = list.Count - 1; n >= 0; n--)
+                    {
+                        foreach (var kvpStatus in Manager.Game.UserFile.DicStatusArchive[mapID])
+                        {
+                            RG.User.Status status = kvpStatus.Value;
+                            if (list[n].IsSame(status))
+                            {
+                                if (status.SubMapID != subMapID)
+                                {
+                                    //Remove the item from DicVisitor due to submap id not match so that it wont load the wrong guest
+                                    list.RemoveAt(n);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static void RecoverGuestDictionary()
+        {
+            //add back the member info once the map is loaded
+            if (ActionScene.IsCurrentPrivateMap())
+            {
+                var mapIDs = ActionScene.Instance._actionSettings._mapIDs;
+                if (StateManager.Instance.privateRoomGuestListBackup.Count > 0)
+                {
+                    Manager.Game.UserFile.DicVisitors.Remove(ActionScene.Instance.MapID);
+                    Manager.Game.UserFile.DicVisitors[ActionScene.Instance.MapID] = StateManager.Instance.privateRoomGuestListBackup;
+
+                    StateManager.Instance.privateRoomGuestListBackup = new RG.User.MemberInfoList();
+
+                }
+            }
         }
     }
 }

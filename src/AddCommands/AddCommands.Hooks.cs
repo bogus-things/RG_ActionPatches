@@ -13,6 +13,14 @@ namespace RGActionPatches.AddCommands
         private static ManualLogSource Log = RGActionPatchesPlugin.Log;
         internal static string GUID = RGActionPatchesPlugin.GUID + ".AddCommands";
 
+        //Force male actors to be  bad friend in a private room
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
+        private static void FilterCommandsPre(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
+        {
+            Patches.SpoofActorAsBadFriend(ActionScene.Instance);
+        }
+
         // Add "Talk to someone" to the list of commands if it's been filtered out
         [HarmonyPostfix]
         [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
@@ -72,6 +80,61 @@ namespace RGActionPatches.AddCommands
         private static void GetTypeCommandList3Post(ActionPoint __instance, int type, List<ActionCommand> commands)
         {
             Patches.AddToPointSocializeCommands(__instance.AttachedActor, ActionScene.Instance, type, commands);
+        }
+
+        //To generate full summon list by altering the actor list
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetSummonCommandList))]
+        private static void getSummonCommandListPre(ActionScene __instance, Actor actor, List<ActionCommand> commandList, ref List<Actor> __state)
+        {
+            Patches.SpoofActorList(__instance, actor, ref __state);
+        }
+
+        /***
+         * Allow summoning the 2nd summoning character to be non-bad-friend
+         * Private room rule 
+         * 1. the private room can only allow 3 person max
+         * 2. if a character has already taken the position next with the main actor, summoning female into this room is not allowed (due to have bugs if female standing in bad friend position)
+        **/
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetSummonCommandList))]
+        private static void getSummonCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList, List<Actor> __state)
+        {
+            Patches.UpdateSummonCommandList(__instance, actor, commandList, __state);
+        }
+
+        //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
+        //manually create the list for the private room case
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorMMFTargetCommandList))]
+        private static void getActorMMFTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
+        {
+            Patches.UpdateMMFTargetCommandList(__instance, commandList);
+        }
+
+        //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
+        //manually create the list for the private room case
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorFFMTargetCommandList))]
+        private static void getActorFFMTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
+        {
+            Patches.UpdateFFMTargetCommandList(__instance, commandList);
+        }
+
+        //Restore the job id of the character occupying the bad friend action point when the actor leave the private room
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(Actor), nameof(Actor.OnExit))]
+        private static void OnExit(Actor __instance)
+        {
+            Guests.Patches.RestoreActorFromBadFriend(__instance);
+        }
+
+        //Restore the job id of the characters occupying the bad friend action point in case the player exit the private room and go back to town map
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.OnDestroy))]
+        private static void OnDestroyPre()
+        {
+            Guests.Patches.RestoreActorFromBadFriend();
         }
     }
 }
