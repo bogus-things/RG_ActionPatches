@@ -29,7 +29,6 @@ If you believe you've found a bug with RG_ActionPatches, please use the followin
     2. Your current BetterRepack version and your current RG_ActionPatches version
     3. If you're able to reproduce the bug consistently, provide the steps you take to do so
     4. If there is an error in the logs, provide your game logs as an attached `.txt` file (please don't copy/paste it into the issue description)
-
   ## Contributing
   If you'd like to contribute to feature development or bug fixing, pull requests are welcome! For convenience in getting set up, here's a table mapping out the project references (paths are relative to your game root directory):
 | Reference                | Path                                            |
