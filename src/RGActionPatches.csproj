@@ -32,49 +32,49 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>ref\Assembly-CSharp.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IL">
-      <HintPath>ref\IL.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\IL.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppSystem">
-      <HintPath>ref\Il2CppSystem.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2CppSystem.Core">
-      <HintPath>ref\Il2CppSystem.Core.dll</HintPath>
+	  <HintPath>..\..\..\..\..\..\Games\RoomGirl\BepInEx\unhollowed\Il2CppSystem.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="0Harmony">
-      <HintPath>ref\0Harmony.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\core\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Core">
-      <HintPath>ref\BepInEx.Core.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\core\BepInEx.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.IL2CPP">
-      <HintPath>ref\BepInEx.IL2CPP.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\core\BepInEx.IL2CPP.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>ref\Il2Cppmscorlib.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\Il2Cppmscorlib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnhollowerBaseLib">
-      <HintPath>ref\UnhollowerBaseLib.dll</HintPath>
+      <HintPath>C:\Games\RoomGirl\BepInEx\core\UnhollowerBaseLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>ref\UnityEngine.CoreModule.dll</HintPath>
+	  <HintPath>C:\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>ref\UnityEngine.UI.dll</HintPath>
+	  <HintPath>..\..\..\..\..\..\Games\RoomGirl\BepInEx\unhollowed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
