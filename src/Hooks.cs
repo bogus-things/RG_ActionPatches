@@ -35,5 +35,21 @@ namespace RGActionPatches
             Harmony.UnpatchID(Guests.Hooks.GUID);
             Harmony.UnpatchID(ADV.Hooks.GUID);
         }
+                
+        //Check the MapID and SubMapID(PrivateKeyID) and remove guest actors that do not belong to the private map
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.InitializePartnerState))]
+        private static void InitializePartnerStatePre(ActionScene __instance , Il2CppSystem.Collections.Generic.List<RG.Scene.Action.Core.Actor> actors)
+        {
+            Guests.Patches.RemoveGuestsDoNotBelongToScene(__instance, actors);
+        }
+
+        //Handle the case of saving during the scene map
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(RG.Scene.Home.UI.SaveLoadWindow), nameof(RG.Scene.Home.UI.SaveLoadWindow.OpenTargetSaveLoadWindow))]
+        private static void OpenTargetSaveLoadWindow(RG.Scene.Home.UI.SaveLoadWindow.Mode mode, bool isTitleScene)
+        {
+            Guests.Patches.RestoreActorUponSaveOptionOpened(mode);
+        }
     }
 }

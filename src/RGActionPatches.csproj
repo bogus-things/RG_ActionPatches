@@ -85,6 +85,7 @@
     <Compile Include="ADV\ADV.Patches.cs" />
     <Compile Include="Captions.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Constant.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Hooks.cs" />
     <Compile Include="DateSpotMovement\DateSpotMovement.Patches.cs" />
     <Compile Include="Guests\Guests.Hooks.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="StateManager.cs" />
     <Compile Include="TalkTarget\TalkTarget.Hooks.cs" />
     <Compile Include="TalkTarget\TalkTarget.Patches.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="RGActionPatchesPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

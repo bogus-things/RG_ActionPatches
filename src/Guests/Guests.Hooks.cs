@@ -33,6 +33,8 @@ namespace RGActionPatches.Guests
         {
             ActionScene scene = ActionScene.Instance;
             StateManager.Instance.guestActor = actor;
+            if (scene._actionSettings.IsPrivate(scene.MapID))
+                Patches.SpoofActorAsBadFriend(scene);
             __state = (actor.JobID, actor.PrivateID, actor.WorkplaceID);
             Patches.DoLivingRoomSpoof(scene, actor);
         }
@@ -44,7 +46,8 @@ namespace RGActionPatches.Guests
             actor._status.JobID = __state.Item1;
             actor.PrivateID = __state.Item2;
             actor.WorkplaceID = __state.Item3;
-            Patches.AddGuestToVisitors(ActionScene.Instance, actor);
+            Patches.AddJobMapGuestToVisitors(ActionScene.Instance, actor);
+            Patches.AddPrivateRoomGuestToVisitors(ActionScene.Instance, actor);
         }
 
         // On job maps, override some state changes to allow called actors
@@ -54,6 +57,7 @@ namespace RGActionPatches.Guests
         private static void ChangeStatePre(Actor __instance, ref int stateType)
         {
             stateType = Patches.HandleJobCallRedirect(ActionScene.Instance, __instance, stateType);
+            Patches.FixPrivateRoomMissingTalkingScript(__instance, stateType);
         }
 
         // When called workers get to their spots, have the caller go talk

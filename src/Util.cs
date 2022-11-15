@@ -4,7 +4,7 @@ using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
 using System;
-
+using System.Reflection;
 
 namespace RGActionPatches
 {
@@ -210,6 +210,87 @@ namespace RGActionPatches
             {
                 actor._status.JobID = mapJobID;
             }
+        }
+
+
+        internal static bool IsBadFriendActionPointReserved(ActionScene scene)
+        {
+            foreach (Actor a in scene._actors)
+            {
+                if (a.Status.ActionState.CurrentActionPoint.GetValueOrDefault() == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
+                    return true;
+                if (a.ReservedActionPoint != null)
+                    if (a.ReservedActionPoint.UniqueID == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
+                        return true;
+            }
+            return false;
+        }
+
+        internal static Actor GetBadFriendActionPointActor(ActionScene scene)
+        {
+            foreach (Actor a in scene._actors)
+            {
+                if (a.OccupiedActionPoint != null)
+                    if (a.OccupiedActionPoint.UniqueID == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
+                        return a;
+            }
+            return null;
+        }
+
+        //value hardcoded due to not available in the home scene
+        internal static bool IsPrivateMap(int mapID)
+        {
+            if (new System.Collections.Generic.List<int> {
+                Constant.MapIDs.ComDorm,
+                Constant.MapIDs.Apartment,
+                Constant.MapIDs.LargeApartment,
+                Constant.MapIDs.OldApartment,
+                Constant.MapIDs.HighRiseCondo,
+                Constant.MapIDs.OwnRoom
+            }.Contains(mapID))
+                return true;
+            else
+                return false;
+        }
+
+        internal static RG.User.MemberInfo CloneMemberInfo(RG.User.MemberInfo info)
+        {
+            RG.User.MemberInfo cloneInfo = new RG.User.MemberInfo();
+            cloneInfo.KeyID = info.KeyID;
+            cloneInfo.IndexAsMob = info.IndexAsMob;
+            cloneInfo.JobID = info.JobID;
+            cloneInfo.Sex = info.Sex;
+            return cloneInfo;
+        }
+
+        internal static RG.User.Status GetStatusFromArchive(RG.User.MemberInfo info)
+        {
+            foreach (var dict in Manager.Game.UserFile.DicStatusArchive)
+            {
+                foreach (var status in dict)
+                {
+                    if (status.Value.KeyID == info.KeyID && status.Value.JobID == info.JobID && status.Value.Sex == status.Value.Sex)
+                    {
+                        return status.Value;
+                    }
+                }
+            }
+            return null;
+        }
+
+        internal static RG.User.Status GetStatusFromArchive(string charaFileName)
+        {
+            foreach (var dict in Manager.Game.UserFile.DicStatusArchive)
+            {
+                foreach (var status in dict)
+                {
+                    if (status.Value.CharaFileName == charaFileName)
+                    {
+                        return status.Value;
+                    }
+                }
+            }
+            return null;
         }
     }
 }
