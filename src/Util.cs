@@ -292,5 +292,16 @@ namespace RGActionPatches
             }
             return null;
         }
+
+        internal static void CountMaleFemale(Actor actor1, Actor actor2, Actor actor3, out int maleCount, out int femaleCount)
+        {
+            int m = 0;
+            int f = 0;
+            if (actor1.Sex == 0) m++; else f++;
+            if (actor2.Sex == 0) m++; else f++;
+            if (actor3.Sex == 0) m++; else f++;
+            maleCount = m;
+            femaleCount = f;
+        }
     }
 }

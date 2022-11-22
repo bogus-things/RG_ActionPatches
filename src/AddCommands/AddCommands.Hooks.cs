@@ -27,6 +27,8 @@ namespace RGActionPatches.AddCommands
         private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
         {
             Patches.UpdateActorCommands(ActionScene.Instance, __instance, commands, dest);
+            // Add MMF command in job job room
+            Patches.PatchThreesomeInPublicMap(ActionScene.Instance, __instance);
         }
 
         // Temporarily fake the actor's JobID before autoplay decides the actions so job-restricted actions aren't disabled
@@ -112,13 +114,21 @@ namespace RGActionPatches.AddCommands
             Patches.UpdateMMFTargetCommandList(__instance, commandList);
         }
 
+        //Generate MMF command list in public room
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorMMFEventTargetCommandList))]
+        private static void GetActorMMFEventTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
+        {
+            Patches.UpdateMMFTargetCommandListInPublicRoom(__instance, actor, commandList);
+        }
+
         //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
         //manually create the list for the private room case
         [HarmonyPostfix]
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorFFMTargetCommandList))]
         private static void getActorFFMTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
         {
-            Patches.UpdateFFMTargetCommandList(__instance, commandList);
+            Patches.UpdateFFMTargetCommandList(__instance, actor, commandList);
         }
 
         //Restore the job id of the character occupying the bad friend action point when the actor leave the private room
@@ -136,5 +146,23 @@ namespace RGActionPatches.AddCommands
         {
             Guests.Patches.RestoreActorFromBadFriend();
         }
+
+        //////For checking the method that should be called by action delegate when creating ActionCommand
+        ////[HarmonyPrefix]
+        ////[HarmonyPatch(typeof(ActionPoint.__c__DisplayClass150_1), nameof(ActionPoint.__c__DisplayClass150_1._Init_b__1))]
+        ////private static void _Init_b__1(ActionPoint.__c__DisplayClass150_1 __instance, Actor actor, ActionInfo xInfo)
+        ////{
+        ////    Log.Log(LogLevel.Info, "===Check _Init_b__1===");
+        ////    if (actor != null)
+        ////        Log.Log(LogLevel.Info, "actor : " + actor.Status.FullName);
+        ////    if (xInfo != null)
+        ////        Log.Log(LogLevel.Info, "xInfo : " + xInfo.ActionID);
+        ////    if (__instance.action != null)
+        ////    {
+        ////        Log.Log(LogLevel.Info, "action full name : " + __instance.action.Method.DeclaringType.FullName);
+        ////        Log.Log(LogLevel.Info, "action signature : " + __instance.action.Method.FormatNameAndSig(true));
+        ////    }
+        ////}
+
     }
 }

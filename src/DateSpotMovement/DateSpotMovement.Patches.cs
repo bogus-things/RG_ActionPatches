@@ -18,7 +18,10 @@ namespace RGActionPatches.DateSpotMovement
 
         internal static void HandleTalkMovement(ActionScene scene, Actor actor, RG.Define.StateID stateID)
         {
-            if (IsDateSpot(scene._actionSettings, scene.MapID) && stateID == RG.Define.StateID.GoToDestination)
+            if (IsDateSpot(scene._actionSettings, scene.MapID) && stateID == RG.Define.StateID.GoToDestination
+                && !(actor.ActionInfo.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteMMFThreesome || actor.ActionInfo.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteFFMThreesome)
+                && actor.ActionInfo.ActionType != -7
+                )
             {
                 Actor target = actor.RecentScheduledPoint?.AttachedActor;
                 ActionPoint pairing = actor.RecentScheduledPoint?.Pairing;
@@ -84,6 +87,8 @@ namespace RGActionPatches.DateSpotMovement
                 currentPoint != null &&
                 currentPoint != actor.PostedActionPoint &&
                 currentPoint.Pairing?.AttachedActor != null
+                && actor.ActionInfo.ActionType != -7
+                && !(actor.ActionInfo.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteMMFThreesome || actor.ActionInfo.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteFFMThreesome)
             );
 
             if (conditions)

@@ -53,7 +53,11 @@ namespace RGActionPatches.DateSpotMovement
         private static void ReserveActionPre(Actor actor, ref RG.Define.StateID stateID)
         {
             ActionScene scene = ActionScene.Instance;
-            if (Patches.IsDateSpot(scene._actionSettings, scene.MapID) && stateID == RG.Define.StateID.GoSideCharacter)
+            //Exclude the case of actor going to perform threesome action
+            if (Patches.IsDateSpot(scene._actionSettings, scene.MapID) && stateID == RG.Define.StateID.GoSideCharacter
+                && !(actor.ActionInfo.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteMMFThreesome || actor.ActionInfo.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteFFMThreesome)
+                && actor.ActionInfo.ActionType != -7
+                )
             {
                 stateID = RG.Define.StateID.GoToDestination;
             }

@@ -40,6 +40,7 @@ namespace RGActionPatches
             internal static string TalkingToSomeone { get { return "会話中"; } }
             internal static string InExamination { get { return "診察中"; } }
             internal static string Unavailable { get { return "利用できない"; } }
+            internal static string OverCapacity { get { return "定員オーバー"; } }
         }
     }
 }
