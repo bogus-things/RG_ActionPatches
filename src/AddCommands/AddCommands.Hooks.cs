@@ -27,8 +27,6 @@ namespace RGActionPatches.AddCommands
         private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
         {
             Patches.UpdateActorCommands(ActionScene.Instance, __instance, commands, dest);
-            // Add MMF command in job job room
-            Patches.PatchThreesomeInPublicMap(ActionScene.Instance, __instance);
         }
 
         // Temporarily fake the actor's JobID before autoplay decides the actions so job-restricted actions aren't disabled
@@ -103,32 +101,6 @@ namespace RGActionPatches.AddCommands
         private static void getSummonCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList, List<Actor> __state)
         {
             Patches.UpdateSummonCommandList(__instance, actor, commandList, __state);
-        }
-
-        //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
-        //manually create the list for the private room case
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorMMFTargetCommandList))]
-        private static void getActorMMFTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
-        {
-            Patches.UpdateMMFTargetCommandList(__instance, commandList);
-        }
-
-        //Generate MMF command list in public room
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorMMFEventTargetCommandList))]
-        private static void GetActorMMFEventTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
-        {
-            Patches.UpdateMMFTargetCommandListInPublicRoom(__instance, actor, commandList);
-        }
-
-        //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
-        //manually create the list for the private room case
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorFFMTargetCommandList))]
-        private static void getActorFFMTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
-        {
-            Patches.UpdateFFMTargetCommandList(__instance, actor, commandList);
         }
 
         //Restore the job id of the character occupying the bad friend action point when the actor leave the private room

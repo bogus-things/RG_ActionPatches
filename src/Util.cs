@@ -303,5 +303,19 @@ namespace RGActionPatches
             maleCount = m;
             femaleCount = f;
         }
+
+        //There is one function in the Illusion code but no idea how to call it properly
+        internal static bool CheckHasEverSex(Actor actor1, Actor actor2)
+        {
+            foreach (var dict in actor1.Status.RelationshipParameter)
+            {
+                if (dict.ContainsKey(actor2.CharaFileName))
+                {
+                    return dict[actor2.CharaFileName].HasEverSex;
+                }
+            }
+
+            return false;
+        }
     }
 }
