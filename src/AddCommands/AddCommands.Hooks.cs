@@ -103,24 +103,6 @@ namespace RGActionPatches.AddCommands
             Patches.UpdateSummonCommandList(__instance, actor, commandList, __state);
         }
 
-        //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
-        //manually create the list for the private room case
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorMMFTargetCommandList))]
-        private static void getActorMMFTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
-        {
-            Patches.UpdateMMFTargetCommandList(__instance, commandList);
-        }
-
-        //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend
-        //manually create the list for the private room case
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorFFMTargetCommandList))]
-        private static void getActorFFMTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
-        {
-            Patches.UpdateFFMTargetCommandList(__instance, commandList);
-        }
-
         //Restore the job id of the character occupying the bad friend action point when the actor leave the private room
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Actor), nameof(Actor.OnExit))]
@@ -136,5 +118,23 @@ namespace RGActionPatches.AddCommands
         {
             Guests.Patches.RestoreActorFromBadFriend();
         }
+
+        //////For checking the method that should be called by action delegate when creating ActionCommand
+        ////[HarmonyPrefix]
+        ////[HarmonyPatch(typeof(ActionPoint.__c__DisplayClass150_1), nameof(ActionPoint.__c__DisplayClass150_1._Init_b__1))]
+        ////private static void _Init_b__1(ActionPoint.__c__DisplayClass150_1 __instance, Actor actor, ActionInfo xInfo)
+        ////{
+        ////    Log.Log(LogLevel.Info, "===Check _Init_b__1===");
+        ////    if (actor != null)
+        ////        Log.Log(LogLevel.Info, "actor : " + actor.Status.FullName);
+        ////    if (xInfo != null)
+        ////        Log.Log(LogLevel.Info, "xInfo : " + xInfo.ActionID);
+        ////    if (__instance.action != null)
+        ////    {
+        ////        Log.Log(LogLevel.Info, "action full name : " + __instance.action.Method.DeclaringType.FullName);
+        ////        Log.Log(LogLevel.Info, "action signature : " + __instance.action.Method.FormatNameAndSig(true));
+        ////    }
+        ////}
+
     }
 }

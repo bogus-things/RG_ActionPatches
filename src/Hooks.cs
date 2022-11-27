@@ -19,6 +19,7 @@ namespace RGActionPatches
             Harmony.CreateAndPatchAll(typeof(TalkTarget.Hooks), TalkTarget.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(Guests.Hooks), Guests.Hooks.GUID);
             Harmony.CreateAndPatchAll(typeof(ADV.Hooks), ADV.Hooks.GUID);
+            Harmony.CreateAndPatchAll(typeof(Threesome.Hooks), Threesome.Hooks.GUID);
 
             Guests.Patches.ChangeCommandStates(ActionScene.Instance.Actors);
         }
@@ -34,6 +35,7 @@ namespace RGActionPatches
             Harmony.UnpatchID(TalkTarget.Hooks.GUID);
             Harmony.UnpatchID(Guests.Hooks.GUID);
             Harmony.UnpatchID(ADV.Hooks.GUID);
+            Harmony.UnpatchID(Threesome.Hooks.GUID);
         }
                 
         //Check the MapID and SubMapID(PrivateKeyID) and remove guest actors that do not belong to the private map

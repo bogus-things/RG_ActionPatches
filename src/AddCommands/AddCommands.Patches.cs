@@ -220,37 +220,6 @@ namespace RGActionPatches.AddCommands
             }
         }
 
-        internal static void UpdateMMFTargetCommandList(ActionScene scene, List<ActionCommand> commandList)
-        {
-            if (scene._actionSettings.IsPrivate(scene.MapID))
-            {
-                commandList.Clear();
-                if (scene._femaleActors.Count == 1 && scene._maleActors.Count == 2)
-                {
-                    foreach (var female in scene._femaleActors)
-                    {
-                        commandList.Add(female.Come2TalkMMFCommand);
-                    }
-                }
-            }
-        }
-
-        internal static void UpdateFFMTargetCommandList(ActionScene scene, List<ActionCommand> commandList)
-        {
-            if (scene._actionSettings.IsPrivate(scene.MapID))
-            {
-                commandList.Clear();
-                if (scene._femaleActors.Count == 2 && scene._maleActors.Count == 1)
-                {
-                    foreach (var female in scene._femaleActors)
-                    {
-                        commandList.Add(female.Come2TalkFFMCommand);
-                    }
-                }
-            }
-        }
-
-
         internal static void SpoofActorAsBadFriend(ActionScene scene)
         {
             if (scene._actionSettings.IsPrivate(scene.MapID))
@@ -323,7 +292,7 @@ namespace RGActionPatches.AddCommands
         private static void DeDupeCommandList(List<ActionCommand> commands, Actor actor)
         {
             HashSet<string> names = new HashSet<string>();
-            for(int i = commands.Count -1; i >= 0; i--)
+            for (int i = commands.Count - 1; i >= 0; i--)
             {
                 ActionCommand cmd = commands[i];
                 string name = Util.GetActionName(cmd, actor);

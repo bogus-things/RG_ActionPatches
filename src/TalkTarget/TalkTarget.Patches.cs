@@ -55,11 +55,12 @@ namespace RGActionPatches.TalkTarget
                 CommandOption opt = commandList._selectedCommand.Item2;
 
                 if (cmd.Info.ActionType == 3 && cmd.Info.GetActionNameCallback != null && !opt.ActiveDisablePanel)
-                {
+                {                    
                     string actionName = cmd.Info.GetActionNameCallback.Invoke(commandList.ActorDependsOn);
                     if (actionName.Contains(Captions.Actions.SpeakWith))
                     {
-                        string targetName = actionName.Split(Captions.Actions.SpeakWith.ToCharArray())[0].Trim();
+                        //string targetName = actionName.Split(Captions.Actions.SpeakWith.ToCharArray())[0].Trim();     //Have bug if the name of the character contain the any japanese word or character that matches with the characters in the caption
+                        string targetName = actionName.Replace(Captions.Actions.SpeakWith, String.Empty);
                         Func<Actor, bool> predicate = delegate (Actor actor) { return targetName == actor.Status.FullName; };
                         Actor targetActor = scene._actors.Find(predicate);
 
@@ -84,6 +85,25 @@ namespace RGActionPatches.TalkTarget
                             {
                                 opt.ActiveDisablePanel = true;
                                 opt.DisableCaptionStr = Captions.Disabled.Unavailable;
+                            }
+                        }
+                    }else if (cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteMMFThreesome || cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteFFMThreesome)
+                    {
+                        //Handling threesome options case, do not allow the option to be selected if someone has already approached the pair
+                        string targetName = actionName;
+                        Func<Actor, bool> predicate = delegate (Actor actor) { return targetName == actor.Status.FullName; };
+                        Actor targetActor = scene._actors.Find(predicate);
+
+                        if(targetActor != null)
+                        {
+                            Func<Actor, bool> predicateTheresome1 = delegate (Actor actor) { return targetActor.InstanceID == actor.ThreesomeTarget?.InstanceID; };
+                            Func<Actor, bool> predicateTheresome2 = delegate (Actor actor) { return targetActor.Partner.InstanceID == actor.ThreesomeTarget?.InstanceID; };
+                            Actor threesomeActor1 = scene._actors.Find(predicateTheresome1);
+                            Actor threesomeActor2 = scene._actors.Find(predicateTheresome2);
+
+                            if (threesomeActor1 != null || threesomeActor2 != null) {
+                                opt.ActiveDisablePanel = true;
+                                opt.DisableCaptionStr = Captions.Disabled.OverCapacity;
                             }
                         }
                     }
