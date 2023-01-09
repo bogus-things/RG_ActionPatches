@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
 using RG.Scene;
 using RG.Scene.Action.Core;
-using RG.Scene.Action.UI;
 using RG.Scripts;
-using RG.UI;
 using Il2CppSystem.Collections.Generic;
 using BepInEx.Logging;
 

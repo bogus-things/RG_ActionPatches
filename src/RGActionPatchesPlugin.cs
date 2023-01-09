@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace RGActionPatches
 {
+    [BepInProcess("RoomGirl")]
     [BepInPlugin(GUID, PluginName, Version)]
     public class RGActionPatchesPlugin : BasePlugin
     {

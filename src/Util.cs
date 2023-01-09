@@ -217,10 +217,10 @@ namespace RGActionPatches
         {
             foreach (Actor a in scene._actors)
             {
-                if (a.Status.ActionState.CurrentActionPoint.GetValueOrDefault() == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
+                if (a.Status.ActionState.CurrentActionPoint.GetValueOrDefault() == Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
                     return true;
                 if (a.ReservedActionPoint != null)
-                    if (a.ReservedActionPoint.UniqueID == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
+                    if (a.ReservedActionPoint.UniqueID == Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
                         return true;
             }
             return false;
@@ -231,7 +231,7 @@ namespace RGActionPatches
             foreach (Actor a in scene._actors)
             {
                 if (a.OccupiedActionPoint != null)
-                    if (a.OccupiedActionPoint.UniqueID == Manager.Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
+                    if (a.OccupiedActionPoint.UniqueID == Game.ActionMap.APTContainer._dicBadfriendActionPoint[0].UniqueID)
                         return a;
             }
             return null;

@@ -16,16 +16,18 @@ namespace RGActionPatches.AddCommands
         //Force male actors to be  bad friend in a private room
         [HarmonyPrefix]
         [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
-        private static void FilterCommandsPre(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
+        private static void FilterCommandsPre(Actor __instance, ref int __state)
         {
-            Patches.SpoofActorAsBadFriend(ActionScene.Instance);
+            __state = __instance.JobID;
+            Patches.DoBadfriendSpoof(ActionScene.Instance, __instance);
         }
 
         // Add "Talk to someone" to the list of commands if it's been filtered out
         [HarmonyPostfix]
         [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
-        private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
+        private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest, int __state)
         {
+            __instance._status.JobID = __state;
             Patches.UpdateActorCommands(ActionScene.Instance, __instance, commands, dest);
         }
 
@@ -101,22 +103,6 @@ namespace RGActionPatches.AddCommands
         private static void getSummonCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList, List<Actor> __state)
         {
             Patches.UpdateSummonCommandList(__instance, actor, commandList, __state);
-        }
-
-        //Restore the job id of the character occupying the bad friend action point when the actor leave the private room
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Actor), nameof(Actor.OnExit))]
-        private static void OnExit(Actor __instance)
-        {
-            Guests.Patches.RestoreActorFromBadFriend(__instance);
-        }
-
-        //Restore the job id of the characters occupying the bad friend action point in case the player exit the private room and go back to town map
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.OnDestroy))]
-        private static void OnDestroyPre()
-        {
-            Guests.Patches.RestoreActorFromBadFriend();
         }
 
         //////For checking the method that should be called by action delegate when creating ActionCommand

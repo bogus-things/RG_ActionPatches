@@ -2,7 +2,6 @@
 using BepInEx.Logging;
 using Il2CppSystem.Collections.Generic;
 using Manager;
-using RG;
 using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
@@ -220,17 +219,12 @@ namespace RGActionPatches.AddCommands
             }
         }
 
-        internal static void SpoofActorAsBadFriend(ActionScene scene)
+        internal static void DoBadfriendSpoof(ActionScene scene, Actor actor)
         {
-            if (scene._actionSettings.IsPrivate(scene.MapID))
-            {
-                foreach (Actor actor in scene._maleActors)
-                {
-                    if (!StateManager.Instance.dictPrivateRoomSpoof.ContainsKey(actor.CharaFileName))
-                        StateManager.Instance.dictPrivateRoomSpoof.Add(actor.CharaFileName, actor.JobID);
-                    actor._status.JobID = (int)Define.JobID.Badfriend;
-                }
-            }
+            //if (scene._actionSettings.IsPrivate(scene.MapID) && scene._actors.Count > 2)
+            //{
+            //    actor._status.JobID = (int)Define.JobID.Badfriend;
+            //}
         }
 
         private static Func<ActionCommand, bool> GetRemovePredicate(Actor actor, bool isVisitor, bool examChair, bool conferenceRoom)

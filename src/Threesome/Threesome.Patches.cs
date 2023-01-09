@@ -1,5 +1,4 @@
-﻿using System;
-using BepInEx.Logging;
+﻿using BepInEx.Logging;
 using Il2CppSystem.Collections.Generic;
 using RG;
 using RG.Scene;
