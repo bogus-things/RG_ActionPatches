@@ -7,6 +7,10 @@ A collection of Harmony patches to unlock &amp; add restricted or missing charac
 - Adds support for "Talk to someone" at date spots (cafe, restaurant, park), allowing single visitors to talk to each other and single visitors to steal seats from characters in the bathroom
 - Adds some other previously job-restricted actions for characters visiting a map
 - Patches support for these additions into the game's autoplay functionality
+- Adds more actions for characters called to a map & allows characters called to their job map to move to their usual place on the map
+- Adds support for calling multiple guests into a private room
+- Adds support for MMF for all male characters
+- Removes job map restriction for MMF/FFM actions
 
 ## Requirements
 This plugin was developed exclusively using the BetterRepack repacks. Compatibility/support is not guaranteed for other types of game installations.
