@@ -11,25 +11,54 @@ namespace RGActionPatches.ADV
         private const int MInitMMFEventID = 8;
         private const int FInitMMFEventID = 9;
 
-        internal static void SpoofForJobH(ActionScene scene, Actor main, Actor subA = null, Actor subB = null)
+        internal static int SpoofForJobH(ActionScene scene, int eventID, Actor main, Actor subA = null, Actor subB = null)
         {
+            int eID = eventID;
             if (scene._actionSettings.IsJobMap(scene.MapID))
             {
-                StateManager.Instance.addSpoofedActor(main, main.JobID, main._status.KeyID, main._status.IndexAsMob);
-                Util.SpoofJobID(scene, main);
+                int sexCount = 0;
+                sexCount += main.Sex;
+                sexCount += subA != null ? subA.Sex : 1;
+                sexCount += subB != null ? subB.Sex : 1;
 
-                if (subA != null)
+                if (sexCount == 1) // if MMF
                 {
-                    StateManager.Instance.addSpoofedActor(subA, subA.JobID, subA._status.KeyID, subA._status.IndexAsMob);
-                    Util.SpoofJobID(scene, subA);
-                }
+                    Actor f = main.Sex == 1 ? main : (subA.Sex == 1 ? subA : subB);
+                    Actor m1 = main.Sex == 0 ? main : subA;
+                    Actor m2 = main == m1 ? (subA.Sex == 0 ? subA : subB) : subB;
 
-                if (subB != null)
-                {
-                    StateManager.Instance.addSpoofedActor(subB, subB.JobID, subB._status.KeyID, subB._status.IndexAsMob);
-                    Util.SpoofJobID(scene, subB);
+                    StateManager.Instance.addSpoofedActor(m1, m1.JobID, m1._status.KeyID, m1._status.IndexAsMob);
+                    m1._status.JobID = f.MyBadfriendA.JobID;
+                    m1._status.KeyID = f.MyBadfriendA.KeyID;
+                    m1._status.IndexAsMob = f.MyBadfriendA.IndexAsMob;
+
+                    StateManager.Instance.addSpoofedActor(m2, m2.JobID, m2._status.KeyID, m2._status.IndexAsMob);
+                    m2._status.JobID = f.MyBadfriendB.JobID;
+                    m2._status.KeyID = f.MyBadfriendB.KeyID;
+                    m2._status.IndexAsMob = f.MyBadfriendB.IndexAsMob;
+
+                    eID = f == main ? FInitMMFEventID : MInitMMFEventID;
                 }
+                else
+                {
+                    StateManager.Instance.addSpoofedActor(main, main.JobID, main._status.KeyID, main._status.IndexAsMob);
+                    Util.SpoofJobID(scene, main);
+
+                    if (subA != null)
+                    {
+                        StateManager.Instance.addSpoofedActor(subA, subA.JobID, subA._status.KeyID, subA._status.IndexAsMob);
+                        Util.SpoofJobID(scene, subA);
+                    }
+
+                    if (subB != null)
+                    {
+                        StateManager.Instance.addSpoofedActor(subB, subB.JobID, subB._status.KeyID, subB._status.IndexAsMob);
+                        Util.SpoofJobID(scene, subB);
+                    }
+                }
+               
             }
+            return eID;
         }
 
         internal static Actor PatchActorsForPrivateMMF(ActionScene scene, int eventID, Actor main, Actor subA, Actor subB)

@@ -18,7 +18,8 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
             Captions.Actions.TalkToSomeone,
-            Captions.Actions.OfferMMF
+            Captions.Actions.OfferMMF,
+            Captions.Actions.OfferFFM
         };
 
         private static readonly System.Collections.Generic.List<string> MaleCommandsToAdd = new System.Collections.Generic.List<string>()
@@ -28,7 +29,8 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
             Captions.Actions.TalkToSomeone,
-            Captions.Actions.OfferMMF
+            Captions.Actions.OfferMMF,
+            Captions.Actions.OfferFFM
         };
 
         private static readonly System.Collections.Generic.List<string> JobRestrictedCommands = new System.Collections.Generic.List<string>()
@@ -217,14 +219,6 @@ namespace RGActionPatches.AddCommands
 
                 actor._summonCommands = commandList;
             }
-        }
-
-        internal static void DoBadfriendSpoof(ActionScene scene, Actor actor)
-        {
-            //if (scene._actionSettings.IsPrivate(scene.MapID) && scene._actors.Count > 2)
-            //{
-            //    actor._status.JobID = (int)Define.JobID.Badfriend;
-            //}
         }
 
         private static Func<ActionCommand, bool> GetRemovePredicate(Actor actor, bool isVisitor, bool examChair, bool conferenceRoom)

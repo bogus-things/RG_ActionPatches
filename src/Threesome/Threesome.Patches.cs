@@ -66,10 +66,6 @@ namespace RGActionPatches.Threesome
 
         private static void PatchFFMSituation(ActionScene scene, Actor actor)
         {
-            //For FFM, it is already available in workplace and private room, we only have to add it back if it is in public map (cafe, restaurant, park)
-            if (!DateSpotMovement.Patches.IsDateSpot(scene._actionSettings, scene.MapID))
-                return;
-
             if (GetFFMTargetsForActor(scene, actor).Count > 0)
             {
                 bool isExist = false;
@@ -140,7 +136,7 @@ namespace RGActionPatches.Threesome
             List<int> instanceIDAdded = new List<int>();
             List<ActionCommand> result = new List<ActionCommand>();
 
-            foreach (var targetActor in scene._actors)
+            foreach (Actor targetActor in scene._actors)
             {
                 if (actor.InstanceID != targetActor.InstanceID && targetActor.Partner != null && !instanceIDAdded.Contains(targetActor.InstanceID) && targetActor.OccupiedActionPoint != null)
                 {
@@ -284,7 +280,7 @@ namespace RGActionPatches.Threesome
                     }
                 }
             }
-            else if (DateSpotMovement.Patches.IsDateSpot(scene._actionSettings, scene.MapID))
+            else //if (DateSpotMovement.Patches.IsDateSpot(scene._actionSettings, scene.MapID))
             {
                 //Handle the FFM case in date spot scene
                 commandList.Clear();
@@ -293,7 +289,28 @@ namespace RGActionPatches.Threesome
             }
         }
 
+        internal static HPoint Find3PStartPoint(HScene scene)
+        {
+            bool is3p = scene._hSceneManager.ActorFemales.Count + scene._hSceneManager.ActorMales.Count == 3;
+            if (!is3p)
+            {
+                return null;
+            }
 
+            HPointCtrl ctrl = scene.HPointCtrl;
+            foreach (KeyValuePair<int, HPointList.HPointPlaceInfo> kv in ctrl.HPointList.Lst)
+            {
+                foreach(HPoint p in kv.Value.HPoints)
+                {
+                    if (p.name != null && p.name.Contains("3p"))
+                    {
+                        return p;
+                    }
+                }
+            }
+
+            return null;
+        }
 
 
 

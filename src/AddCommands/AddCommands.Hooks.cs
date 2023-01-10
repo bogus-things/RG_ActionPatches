@@ -5,6 +5,7 @@ using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
 using BepInEx.Logging;
 using RG;
+using System;
 
 namespace RGActionPatches.AddCommands
 {
@@ -14,21 +15,28 @@ namespace RGActionPatches.AddCommands
         internal static string GUID = RGActionPatchesPlugin.GUID + ".AddCommands";
 
         //Force male actors to be  bad friend in a private room
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
-        private static void FilterCommandsPre(Actor __instance, ref int __state)
-        {
-            __state = __instance.JobID;
-            Patches.DoBadfriendSpoof(ActionScene.Instance, __instance);
-        }
+        //[HarmonyPrefix]
+        //[HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
+        //private static void FilterCommandsPre(Actor __instance, ref int __state)
+        //{
+        //    __state = __instance.JobID;
+        //    Patches.DoBadfriendSpoof(ActionScene.Instance, __instance);
+        //}
 
         // Add "Talk to someone" to the list of commands if it's been filtered out
         [HarmonyPostfix]
         [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
-        private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest, int __state)
+        private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
         {
-            __instance._status.JobID = __state;
             Patches.UpdateActorCommands(ActionScene.Instance, __instance, commands, dest);
+        }
+
+        // Catch & Suppress an error thrown inside FilterCommands when it's patched by Harmony
+        [HarmonyFinalizer]
+        [HarmonyPatch(typeof(ParameterConditions), nameof(ParameterConditions.IF), new[] { typeof(Define.TableData.Category), typeof(int), typeof(Actor), typeof(Actor), typeof(ActionInfo) })]
+        private static Exception WhoNamesAMethodIF()
+        {
+            return null;
         }
 
         // Temporarily fake the actor's JobID before autoplay decides the actions so job-restricted actions aren't disabled

@@ -17,7 +17,7 @@ namespace RGActionPatches.ADV
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneADV))]
         private static void BeginHSceneADVPre(ref int eventID, Actor main, Actor subA, ref Actor subB)
         {
-            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
+            eventID = Patches.SpoofForJobH(ActionScene.Instance, eventID, main, subA, subB);
             subB = Patches.PatchActorsForPrivateMMF(ActionScene.Instance, eventID, main, subA, subB);
             eventID = Patches.SpoofForPrivateH(ActionScene.Instance, eventID, main, subA, subB);
         }
@@ -27,7 +27,7 @@ namespace RGActionPatches.ADV
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.BeginHSceneOutADV))]
         private static void BeginHSceneOutADVPre(int eventID, Actor main, Actor subA, Actor subB)
         {
-            Patches.SpoofForJobH(ActionScene.Instance, main, subA, subB);
+            Patches.SpoofForJobH(ActionScene.Instance, eventID, main, subA, subB);
             Patches.SpoofForPrivateH(ActionScene.Instance, eventID, main, subA, subB);
         }
 
