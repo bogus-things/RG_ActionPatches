@@ -17,9 +17,7 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.TakeBath,
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
-            Captions.Actions.TalkToSomeone,
-            Captions.Actions.OfferMMF,
-            Captions.Actions.OfferFFM
+            Captions.Actions.TalkToSomeone
         };
 
         private static readonly System.Collections.Generic.List<string> MaleCommandsToAdd = new System.Collections.Generic.List<string>()
@@ -28,9 +26,7 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.DoKitchenH,
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
-            Captions.Actions.TalkToSomeone,
-            Captions.Actions.OfferMMF,
-            Captions.Actions.OfferFFM
+            Captions.Actions.TalkToSomeone
         };
 
         private static readonly System.Collections.Generic.List<string> JobRestrictedCommands = new System.Collections.Generic.List<string>()
