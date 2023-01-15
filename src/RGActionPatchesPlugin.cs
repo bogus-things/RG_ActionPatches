@@ -7,12 +7,13 @@ using UnityEngine;
 
 namespace RGActionPatches
 {
+    [BepInProcess("RoomGirl")]
     [BepInPlugin(GUID, PluginName, Version)]
     public class RGActionPatchesPlugin : BasePlugin
     {
         public const string PluginName = "RG Action Patches";
         public const string GUID = "com.bogus.RGActionPatches";
-        public const string Version = "0.2.0";
+        public const string Version = "1.0.0";
         private const string ComponentName = "BogusComponents";
 
         internal static new ManualLogSource Log;

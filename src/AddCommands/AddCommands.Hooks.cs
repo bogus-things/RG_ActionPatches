@@ -5,6 +5,7 @@ using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
 using BepInEx.Logging;
 using RG;
+using System;
 
 namespace RGActionPatches.AddCommands
 {
@@ -14,12 +15,13 @@ namespace RGActionPatches.AddCommands
         internal static string GUID = RGActionPatchesPlugin.GUID + ".AddCommands";
 
         //Force male actors to be  bad friend in a private room
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
-        private static void FilterCommandsPre(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
-        {
-            Patches.SpoofActorAsBadFriend(ActionScene.Instance);
-        }
+        //[HarmonyPrefix]
+        //[HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
+        //private static void FilterCommandsPre(Actor __instance, ref int __state)
+        //{
+        //    __state = __instance.JobID;
+        //    Patches.DoBadfriendSpoof(ActionScene.Instance, __instance);
+        //}
 
         // Add "Talk to someone" to the list of commands if it's been filtered out
         [HarmonyPostfix]
@@ -27,6 +29,14 @@ namespace RGActionPatches.AddCommands
         private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
         {
             Patches.UpdateActorCommands(ActionScene.Instance, __instance, commands, dest);
+        }
+
+        // Catch & Suppress an error thrown inside FilterCommands when it's patched by Harmony
+        [HarmonyFinalizer]
+        [HarmonyPatch(typeof(ParameterConditions), nameof(ParameterConditions.IF), new[] { typeof(Define.TableData.Category), typeof(int), typeof(Actor), typeof(Actor), typeof(ActionInfo) })]
+        private static Exception WhoNamesAMethodIF()
+        {
+            return null;
         }
 
         // Temporarily fake the actor's JobID before autoplay decides the actions so job-restricted actions aren't disabled
@@ -101,22 +111,6 @@ namespace RGActionPatches.AddCommands
         private static void getSummonCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList, List<Actor> __state)
         {
             Patches.UpdateSummonCommandList(__instance, actor, commandList, __state);
-        }
-
-        //Restore the job id of the character occupying the bad friend action point when the actor leave the private room
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Actor), nameof(Actor.OnExit))]
-        private static void OnExit(Actor __instance)
-        {
-            Guests.Patches.RestoreActorFromBadFriend(__instance);
-        }
-
-        //Restore the job id of the characters occupying the bad friend action point in case the player exit the private room and go back to town map
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.OnDestroy))]
-        private static void OnDestroyPre()
-        {
-            Guests.Patches.RestoreActorFromBadFriend();
         }
 
         //////For checking the method that should be called by action delegate when creating ActionCommand

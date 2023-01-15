@@ -2,7 +2,6 @@
 using BepInEx.Logging;
 using Il2CppSystem.Collections.Generic;
 using Manager;
-using RG;
 using RG.Scene;
 using RG.Scene.Action.Core;
 using RG.Scripts;
@@ -18,8 +17,7 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.TakeBath,
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
-            Captions.Actions.TalkToSomeone,
-            Captions.Actions.OfferMMF
+            Captions.Actions.TalkToSomeone
         };
 
         private static readonly System.Collections.Generic.List<string> MaleCommandsToAdd = new System.Collections.Generic.List<string>()
@@ -28,8 +26,7 @@ namespace RGActionPatches.AddCommands
             Captions.Actions.DoKitchenH,
             Captions.Actions.DoBathH,
             Captions.Actions.MoveToConferenceRoom,
-            Captions.Actions.TalkToSomeone,
-            Captions.Actions.OfferMMF
+            Captions.Actions.TalkToSomeone
         };
 
         private static readonly System.Collections.Generic.List<string> JobRestrictedCommands = new System.Collections.Generic.List<string>()
@@ -217,19 +214,6 @@ namespace RGActionPatches.AddCommands
                 }
 
                 actor._summonCommands = commandList;
-            }
-        }
-
-        internal static void SpoofActorAsBadFriend(ActionScene scene)
-        {
-            if (scene._actionSettings.IsPrivate(scene.MapID))
-            {
-                foreach (Actor actor in scene._maleActors)
-                {
-                    if (!StateManager.Instance.dictPrivateRoomSpoof.ContainsKey(actor.CharaFileName))
-                        StateManager.Instance.dictPrivateRoomSpoof.Add(actor.CharaFileName, actor.JobID);
-                    actor._status.JobID = (int)Define.JobID.Badfriend;
-                }
             }
         }
 

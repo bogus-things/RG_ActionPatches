@@ -21,7 +21,9 @@ namespace RGActionPatches.TalkTarget
             "examination_actionpoint",
             "m_actionpoint_00_doctor",
             "meeting_00_01",
-            "meeting_00_00"
+            "meeting_00_00",
+            "toilet_actionpoint_00",
+            "toilet_actionpoint"
         };
 
         internal static void UnrestrictTalkTargetList(ActionScene scene, Actor actor, List<ActionCommand> commands)

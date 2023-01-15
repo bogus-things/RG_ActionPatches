@@ -1,6 +1,5 @@
 ﻿using RG.Scene.Action.Core;
 using RG.Scene.Action.UI;
-using RG.Scripts;
 using Il2CppSystem.Collections.Generic;
 using UnityEngine;
 
@@ -12,8 +11,8 @@ namespace RGActionPatches
         {
             originalJobIDs = new List<int>(3);
             spoofedActors = new List<Actor>(3);
-            dictPrivateRoomSpoof = new Dictionary<string, int>();
-            privateRoomGuestListBackup = new RG.User.MemberInfoList();
+            originalKeyIDs = new List<int>(3);
+            originalMobIndexes = new List<byte>(3);
         }
 
         internal static StateManager Instance;
@@ -24,20 +23,23 @@ namespace RGActionPatches
         // yeeting all my created tuples and objects
         internal List<int> originalJobIDs { get; set; }
         internal List<Actor> spoofedActors { get; set; }
+        internal List<int> originalKeyIDs { get; set; }
+        internal List<byte> originalMobIndexes { get; set; }
 
         internal Actor userControlledActor { get; set; } = null;
         internal Actor guestActor { get; set; } = null;
         internal Actor redirectedGuestActor { get; set; } = null;
         internal bool livingRoomGuestSpoof { get; set; } = false;
-        //key: actor chara file name, value: original job id
-        internal Dictionary<string, int> dictPrivateRoomSpoof { get; set; } = null;
-        internal RG.User.MemberInfoList privateRoomGuestListBackup { get; set; }
-        internal void addSpoofedActor(Actor actor, int jobID)
+        internal bool badfriendSpoof { get; set; } = false;
+
+        internal void addSpoofedActor(Actor actor, int jobID, int keyID, byte indexAsMob)
         {
             if (!spoofedActors.Contains(actor))
             {
                 originalJobIDs.Add(jobID);
                 spoofedActors.Add(actor);
+                originalKeyIDs.Add(keyID);
+                originalMobIndexes.Add(indexAsMob);
             }
             
         }
@@ -48,8 +50,12 @@ namespace RGActionPatches
             {
                 Actor actor = spoofedActors[i];
                 int jobID = originalJobIDs[i];
+                int keyID = originalKeyIDs[i];
+                byte indexAsMob = originalMobIndexes[i];
 
                 actor._status.JobID = jobID;
+                actor._status.KeyID = keyID;
+                actor._status.IndexAsMob = indexAsMob;
             }
 
             spoofedActors.Clear();
