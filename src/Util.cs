@@ -307,15 +307,25 @@ namespace RGActionPatches
         //There is one function in the Illusion code but no idea how to call it properly
         internal static bool CheckHasEverSex(Actor actor1, Actor actor2)
         {
+            //Illusion does not sync the relationship table, need to check both actor
+            bool result = false;
             foreach (var dict in actor1.Status.RelationshipParameter)
             {
                 if (dict.ContainsKey(actor2.CharaFileName))
                 {
-                    return dict[actor2.CharaFileName].HasEverSex;
+                    result = dict[actor2.CharaFileName].HasEverSex;
                 }
             }
 
-            return false;
+            foreach (var dict in actor2.Status.RelationshipParameter)
+            {
+                if (dict.ContainsKey(actor1.CharaFileName))
+                {
+                    result = result || dict[actor1.CharaFileName].HasEverSex;
+                }
+            }
+
+            return result;
         }
     }
 }
