@@ -125,6 +125,10 @@ namespace RGActionPatches.Guests
                     }
                     if (dest != null)
                     {
+                        //Make the male actor to go to the bad friend point properly
+                        ActionScene.PairActorAndPoint(actor, badfriendPoint);
+                        ActionScene.SetPostedPointIntoActor(actor, badfriendPoint);
+
                         actor.PopScheduledPoint();
                         actor.PushSchedulingPoint(badfriendPoint);
                         actor.SetDestination(dest.position);
