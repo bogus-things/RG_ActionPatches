@@ -13,7 +13,7 @@ namespace RGActionPatches
     {
         public const string PluginName = "RG Action Patches";
         public const string GUID = "com.bogus.RGActionPatches";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
         private const string ComponentName = "BogusComponents";
 
         internal static new ManualLogSource Log;
