@@ -60,6 +60,8 @@ namespace RGActionPatches
 
             spoofedActors.Clear();
             originalJobIDs.Clear();
+            originalKeyIDs.Clear();
+            originalMobIndexes.Clear();
         }
     }
 }

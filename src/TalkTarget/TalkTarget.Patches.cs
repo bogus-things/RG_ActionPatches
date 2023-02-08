@@ -89,7 +89,26 @@ namespace RGActionPatches.TalkTarget
                                 opt.DisableCaptionStr = Captions.Disabled.Unavailable;
                             }
                         }
-                    }else if (cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteMMFThreesome || cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteFFMThreesome)
+                    }
+                    else if (cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteDo && scene._actionSettings.IsPrivate(scene.MapID))
+                    {
+                        //Invite H command list in private room
+                        string targetName = actionName;
+
+                        Func<Actor, bool> predicate = delegate (Actor actor) { return targetName == actor.Status.FullName; };
+                        Actor targetActor = scene._actors.Find(predicate);
+
+                        if (targetActor != null)
+                        {
+                            if (targetActor.CommandState == RG.Define.Action.CommandState.Communication)
+                            {
+                                opt.ActiveDisablePanel = true;
+                                opt.DisableCaptionStr = Captions.Disabled.TalkingToSomeone;
+                            }
+                        }
+
+                    }
+                    else if (cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteMMFThreesome || cmd.Info.NestedActionType == (int)RG.Define.Action.FixedActionPointType.InviteFFMThreesome)
                     {
                         //Handling threesome options case, do not allow the option to be selected if someone has already approached the pair
                         string targetName = actionName;
