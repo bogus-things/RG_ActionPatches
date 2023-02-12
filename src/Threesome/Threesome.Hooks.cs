@@ -18,7 +18,24 @@ namespace RGActionPatches.Threesome
         [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
         private static void FilterCommandsPre(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
         {
+            Patches.SpoofBadFriendInPrivateRoom(__instance);
             Patches.PatchThreesomeInPublicMap(ActionScene.Instance, __instance);
+        }
+
+        //Restore the Status after the command list is populated
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(Actor), nameof(Actor.FilterCommands))]
+        private static void FilterCommandsPost(Actor __instance, IReadOnlyList<ActionCommand> commands, List<ActionCommand> dest)
+        {
+            StateManager.Instance.restoreSpoofedActors();
+        }
+
+        //Populate the H target list for the male character who is standing at the bad friend point
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorHTargetCommandList))]
+        private static void GetActorHTargetCommandList(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
+        {
+            Patches.GetSpoofedBadFriendHTargetList(__instance, actor, commandList);
         }
 
         //for unknown reason the option list is not populated for a character with a different job id even it is changed to bad friend

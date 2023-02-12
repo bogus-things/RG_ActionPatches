@@ -125,6 +125,11 @@ namespace RGActionPatches.Guests
                     }
                     if (dest != null)
                     {
+                        //Make the male actor to go to the bad friend point properly
+                        ActionScene.PairActorAndPoint(actor, badfriendPoint);
+                        ActionScene.SetPostedPointIntoActor(actor, badfriendPoint);
+
+                        StateManager.Instance.redirectedGuestActor = StateManager.Instance.guestActor;
                         actor.PopScheduledPoint();
                         actor.PushSchedulingPoint(badfriendPoint);
                         actor.SetDestination(dest.position);
@@ -387,7 +392,7 @@ namespace RGActionPatches.Guests
             return point._autoCommands[sex][0];
         }
 
-        private static bool TryGetBadfriendPointID(ActionScene scene, out int pointID)
+        internal static bool TryGetBadfriendPointID(ActionScene scene, out int pointID)
         {
             int mapID = scene.MapID;
             ActionSettings.MapIDs mapIDs = scene._actionSettings.MapID;

@@ -12,6 +12,15 @@ namespace RGActionPatches.Threesome
     {
         private static ManualLogSource Log = RGActionPatchesPlugin.Log;
 
+        //The Action Point names of host and guest in private room
+        private static readonly System.Collections.Generic.List<string> PrivateBadFriendValidTargetHPointNames = new System.Collections.Generic.List<string>()
+        {
+            "host_actionpoint_00",
+            "guest_actionpoint_00",
+            "host_actionpoint",
+            "guest_actionpoint",
+        };
+
         internal static void PatchThreesomeInPublicMap(ActionScene scene, Actor actor)
         {
             if (scene._actionSettings.IsPrivate(scene.MapID))
@@ -259,9 +268,13 @@ namespace RGActionPatches.Threesome
                 commandList.Clear();
                 if (scene._femaleActors.Count == 1 && scene._maleActors.Count == 2)
                 {
-                    foreach (var female in scene._femaleActors)
+                    if (scene._femaleActors[0].Partner != null)
                     {
-                        commandList.Add(female.Come2TalkMMFCommand);
+                        //the non bad friend characters need to be in pair
+                        foreach (var female in scene._femaleActors)
+                        {
+                            commandList.Add(female.Come2TalkMMFCommand);
+                        }
                     }
                 }
             }
@@ -274,9 +287,13 @@ namespace RGActionPatches.Threesome
                 commandList.Clear();
                 if (scene._femaleActors.Count == 2 && scene._maleActors.Count == 1)
                 {
-                    foreach (var female in scene._femaleActors)
+                    if (scene._femaleActors[0].Partner != null)
                     {
-                        commandList.Add(female.Come2TalkFFMCommand);
+                        //the two female characters need to be in pair
+                        foreach (var female in scene._femaleActors)
+                        {
+                            commandList.Add(female.Come2TalkFFMCommand);
+                        }
                     }
                 }
             }
@@ -310,6 +327,56 @@ namespace RGActionPatches.Threesome
             }
 
             return null;
+        }
+
+        internal static void SpoofBadFriendInPrivateRoom(Actor actor)
+        {
+            if (ActionScene.Instance._actionSettings.IsPrivate(ActionScene.Instance.MapID))
+            {
+                int badFriendPointID;
+                Guests.Patches.TryGetBadfriendPointID(ActionScene.Instance, out badFriendPointID);
+
+                if (actor.OccupiedActionPoint?.UniqueID == badFriendPointID && ActionScene.Instance._femaleActors.Count > 0)
+                {
+                    //Spoof the male character at bad friend point to be a bad friend
+                    Actor f = ActionScene.Instance._femaleActors[0];
+                    StateManager.Instance.addSpoofedActor(actor, actor.JobID, actor._status.KeyID, actor._status.IndexAsMob);
+                    actor._status.JobID = f.MyBadfriendA.JobID;
+                    actor._status.KeyID = f.MyBadfriendA.KeyID;
+                    actor._status.IndexAsMob = f.MyBadfriendA.IndexAsMob;
+
+                    if (ActionScene.Instance._maleActors.Count > 1 && f.Partner != null)
+                    {
+                        //Spoof the partner male to be a bad friend too if MMF situation is possible
+                        Actor m2 = f.Partner;
+
+                        StateManager.Instance.addSpoofedActor(m2, m2.JobID, m2._status.KeyID, m2._status.IndexAsMob);
+                        m2._status.JobID = f.MyBadfriendB.JobID;
+                        m2._status.KeyID = f.MyBadfriendB.KeyID;
+                        m2._status.IndexAsMob = f.MyBadfriendB.IndexAsMob;
+                    }
+                }
+            }
+        }
+
+        internal static void GetSpoofedBadFriendHTargetList(ActionScene scene, Actor actor, List<ActionCommand> commandList)
+        {
+            if (ActionScene.Instance._actionSettings.IsPrivate(ActionScene.Instance.MapID))
+            {
+                int badFriendPointID;
+                Guests.Patches.TryGetBadfriendPointID(scene, out badFriendPointID);
+
+                if (actor.OccupiedActionPoint?.UniqueID == badFriendPointID && ActionScene.Instance._femaleActors.Count > 0)
+                {
+                    commandList.Clear();
+                    foreach (Actor f in scene._femaleActors)
+                    {
+                        //Only allow the spoofed bad friend character to initiate H action if the target female character is located in host point or guest point to avoid complicated scenario.
+                        if (PrivateBadFriendValidTargetHPointNames.Contains(f.OccupiedActionPoint?.name))
+                            commandList.Add(f.Come2TalkHCommand);
+                    }
+                }
+            }
         }
 
 
