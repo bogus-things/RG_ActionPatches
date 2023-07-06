@@ -116,5 +116,40 @@ namespace RGActionPatches.ADV
         {
             StateManager.Instance.restoreSpoofedActors();
         }
+
+        internal static void RedirectMissingAssets(ref string bundle, ref string asset)
+        {
+            string[] parts = bundle.Split('/');
+
+            if (parts.Length >= 2 && parts[parts.Length - 1] == "h_special.unity3d")
+            {
+                string cha = parts[parts.Length - 2];
+
+                // case: office desk special H intro
+                if (asset == "102" && !(cha == "c00" || cha == "c01"))
+                {
+                    bundle = $"adv/scenario/00_01/{cha}/h_normal.unity3d";
+                    asset = "0";
+                }
+                // case: office desk special H outro
+                else if (asset == "103" && !(cha == "c00" || cha == "c01"))
+                {
+                    bundle = $"adv/scenario/00_01/{cha}/h_normal.unity3d";
+                    asset = "16";
+                }
+                // case: class desk special H intro
+                else if (asset == "118" && !(cha == "c04" || cha == "c05"))
+                {
+                    bundle = $"adv/scenario/00_01/{cha}/h_normal.unity3d";
+                    asset = "0";
+                }
+                // case: class desk special H outro
+                else if (asset == "119" && !(cha == "c04" || cha == "c05"))
+                {
+                    bundle = $"adv/scenario/00_01/{cha}/h_normal.unity3d";
+                    asset = "16";
+                }
+            }
+        }
     }
 }

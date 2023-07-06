@@ -338,6 +338,7 @@ namespace RGActionPatches.Threesome
 
                 if (actor.OccupiedActionPoint?.UniqueID == badFriendPointID && ActionScene.Instance._femaleActors.Count > 0)
                 {
+
                     //Spoof the male character at bad friend point to be a bad friend
                     Actor f = ActionScene.Instance._femaleActors[0];
                     StateManager.Instance.addSpoofedActor(actor, actor.JobID, actor._status.KeyID, actor._status.IndexAsMob);
@@ -384,10 +385,10 @@ namespace RGActionPatches.Threesome
         #region MMF Delegates
         static Il2CppSystem.Action<Actor, ActionInfo> DelegateActionMMFInit = (Il2CppSystem.Action<Actor, ActionInfo>)delegate (Actor actor, ActionInfo xInfo)
         {
-            ActionPoint.__c__DisplayClass150_1 c = new ActionPoint.__c__DisplayClass150_1();
+            ActionPoint.__c__DisplayClass164_1 c = new ActionPoint.__c__DisplayClass164_1();
             c.action = DelegateActionMMF;
-            c.field_Public___c__DisplayClass150_0_0 = new ActionPoint.__c__DisplayClass150_0();
-            c.field_Public___c__DisplayClass150_0_0.__4__this = actor.OccupiedActionPoint;
+            c.field_Public___c__DisplayClass164_0_0 = new ActionPoint.__c__DisplayClass164_0();
+            c.field_Public___c__DisplayClass164_0_0.__4__this = actor.OccupiedActionPoint;
 
             c._Init_b__1(actor, xInfo);
         };
@@ -395,17 +396,17 @@ namespace RGActionPatches.Threesome
         static Il2CppSystem.Action<Actor, ActionPoint, ActionInfo> DelegateActionMMF = (Il2CppSystem.Action<Actor, ActionPoint, ActionInfo>)delegate (Actor actor, ActionPoint point, ActionInfo xInfo)
         {
             ActionPoint.__c c = new ActionPoint.__c();
-            c.__cctor_b__206_132(actor, point, xInfo);
+            c.__cctor_b__223_91(actor, point, xInfo);
         };
         #endregion
 
         #region FFM Delegates
         static Il2CppSystem.Action<Actor, ActionInfo> DelegateActionFFMInit = (Il2CppSystem.Action<Actor, ActionInfo>)delegate (Actor actor, ActionInfo xInfo)
         {
-            ActionPoint.__c__DisplayClass150_1 c = new ActionPoint.__c__DisplayClass150_1();
+            ActionPoint.__c__DisplayClass164_1 c = new ActionPoint.__c__DisplayClass164_1();
             c.action = DelegateActionFFM;
-            c.field_Public___c__DisplayClass150_0_0 = new ActionPoint.__c__DisplayClass150_0();
-            c.field_Public___c__DisplayClass150_0_0.__4__this = actor.OccupiedActionPoint;
+            c.field_Public___c__DisplayClass164_0_0 = new ActionPoint.__c__DisplayClass164_0();
+            c.field_Public___c__DisplayClass164_0_0.__4__this = actor.OccupiedActionPoint;
 
             c._Init_b__1(actor, xInfo);
         };
@@ -413,7 +414,7 @@ namespace RGActionPatches.Threesome
         static Il2CppSystem.Action<Actor, ActionPoint, ActionInfo> DelegateActionFFM = (Il2CppSystem.Action<Actor, ActionPoint, ActionInfo>)delegate (Actor actor, ActionPoint point, ActionInfo xInfo)
         {
             ActionPoint.__c c = new ActionPoint.__c();
-            c.__cctor_b__206_132(actor, point, xInfo);
+            c.__cctor_b__223_91(actor, point, xInfo);
         };
         #endregion
 

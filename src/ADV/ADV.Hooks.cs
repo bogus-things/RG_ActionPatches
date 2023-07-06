@@ -39,15 +39,22 @@ namespace RGActionPatches.ADV
             Patches.RestoreSpoofed();
         }
 
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(TextScenario), nameof(TextScenario.LoadFile))]
+        private static void LoadFilePre(ref string bundle, ref string asset)
+        {
+            Patches.RedirectMissingAssets(ref bundle, ref asset);
+        }
+
 
         [HarmonyFinalizer]
         [HarmonyPatch(typeof(TextScenario), nameof(TextScenario.LoadFile))]
-        private static Exception CatchLoadErrors(Exception __exception, ref bool __result)
+        private static Exception CatchLoadErrors(Exception __exception, string bundle, string asset, ref bool __result)
         {
             if (__exception != null)
             {
                 __result = false;
-                Log.LogWarning("Failed to load bundle for ADV scenario, skipping");
+                Log.LogWarning($"Failed to load (bundle: {bundle}, asset: {asset}) for ADV scenario, skipping");
             }
             return null;
         }

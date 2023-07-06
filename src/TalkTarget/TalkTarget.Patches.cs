@@ -23,7 +23,9 @@ namespace RGActionPatches.TalkTarget
             "meeting_00_01",
             "meeting_00_00",
             "toilet_actionpoint_00",
-            "toilet_actionpoint"
+            "toilet_actionpoint",
+            "sauna_actionpoint_00",
+            "sauna_actionpoint_01"
         };
 
         internal static void UnrestrictTalkTargetList(ActionScene scene, Actor actor, List<ActionCommand> commands)

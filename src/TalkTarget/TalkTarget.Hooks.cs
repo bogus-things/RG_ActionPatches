@@ -19,7 +19,7 @@ namespace RGActionPatches.TalkTarget
         [HarmonyPatch(typeof(ActionScene), nameof(ActionScene.GetActorTargetCommandList))]
         private static void GetActorTargetCommandListPost(ActionScene __instance, Actor actor, List<ActionCommand> commandList)
         {
-            Patches.UnrestrictTalkTargetList(__instance, actor, commandList);
+            Patches.UnrestrictTalkTargetList(__instance, actor, commandList);           
         }
 
         // Rewrite the command list UI to undo some target filtering that happens in this function

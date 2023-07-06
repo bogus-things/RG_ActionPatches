@@ -421,7 +421,16 @@ namespace RGActionPatches.Guests
             {
                 pointID = 12;
             }
-            
+            else if (mapID == mapIDs.CREmployeeRoom) // Noodle shop room
+            {
+                pointID = 25;
+            }
+            else if (mapID == mapIDs.NakaisRoom) // Onsen room
+            {
+                pointID = 23;
+            }
+
+
             return pointID > -1;
         }
 
